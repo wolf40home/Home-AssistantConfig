@@ -7,4 +7,6 @@
 secrets.yaml
 known_devices.yaml
 !harmony_wohnzimmer.conf
-
+!enigma.py
+!emulated_roku.py
+!varible.py
