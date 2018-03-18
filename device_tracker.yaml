@@ -1,0 +1,15 @@
+  - platform: fritz
+    host: fritz.box
+    username: !secret fritz_user
+    password: !secret normal_password
+    consider_home: 180
+#  - platform: nmap_tracker
+#    hosts: 192.168.0.1/24
+#    exclude:
+#    - 192.168.0.68
+#    home_interval: 30    
+    
+#  - platform: fritz
+#    host: fritz7390.fritz.box
+#    username: !secret fritz_user
+#    password: !secret normal_password

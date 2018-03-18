@@ -1,0 +1,22 @@
+  exclude:
+    domains:
+      - automation
+      - weblink
+      - updater
+    entities:
+      - sensor.last_boot
+      - sensor.s_time_date
+      - sun.sun
+      - sensor.s_r_schalter_Wlan
+      - sensor.s_r_schalter_v
+      - sensor.s_r_schalter_up
+      - sensor.s_r_schalter1_Wlan
+      - sensor.s_r_schalter1_v
+      - sensor.s_r_schalter1_up
+      - sensor.s_aquarium_Wlan
+      - sensor.s_aquarium_v
+      - sensor.s_aquarium_up
+
+#  include:
+#    entities:
+#      - sensor.schneider_electric

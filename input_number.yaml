@@ -1,0 +1,8 @@
+  
+auto_light_offset_on:
+  name: Minuten nach Sonnenuntergang
+  icon: mdi:timer
+  min: -60
+  max: 60
+  step: 10
+

@@ -1,0 +1,7 @@
+- platform: generic
+  still_image_url: http://s15731777.onlinehome-server.info/readImage.asp?dummy=1513334922984
+  name: Borkum
+
+#- platform: mjpeg
+#  mjpeg_url: http://pi-hass.fritz.box:8081  
+#  name: Buero  

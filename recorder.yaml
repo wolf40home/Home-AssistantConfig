@@ -1,0 +1,33 @@
+#-------------------------------------------
+#  Recorder Component
+#-------------------------------------------
+purge_keep_days: 10
+purge_interval: 2
+db_url: !secret mysql_log_conn
+
+
+#exclude:
+#  domains:
+#   - automation
+#   - weblink
+#   - updater
+#   - groups
+#   - media_player
+#   - binary_sensor
+#   - calendar
+#  entities:
+#    - sensor.s_time_date
+#    - camera.borkum
+#    - sun.sun
+
+include:
+  entities:
+    - sensor.schneider_electric
+  domains:
+    - switch
+    - light
+    - sensor
+    - input_number
+    - binary_sensor
+#    - media_player
+#    - automation
