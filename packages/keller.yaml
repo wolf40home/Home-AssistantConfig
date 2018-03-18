@@ -1,0 +1,371 @@
+homeassistant:
+  customize:
+    binary_sensor.dm500plus_tracker:
+      icon: mdi:television
+      friendly_name: DM500 plus
+    binary_sensor.piradio2_tracker:
+      icon: mdi:raspberrypi
+    binary_sensor.nas3_tracker:
+      friendly_name: NAS 3
+      icon: mdi:database
+    binary_sensor.wolfgang_da2_tracker:
+      friendly_name: NAS 2
+      icon: mdi:database
+    sensor.wolfgangda2_cpu_usage:
+      friendly_name: DA 2 CPU Auslastung
+    sensor.wolfgangda_cpu_usage:
+      friendly_name: DA CPU Auslastung
+
+switch:
+  - platform: wake_on_lan
+    name: Nas3 Wake
+    mac_address: "00:11:32:83:E3:3E"
+    host: "10.10.0.4"
+
+  - platform: wake_on_lan
+    name: Wolfgang da2 Wake
+    mac_address: "00:08:9B:D1:73:18"
+    host: "10.10.0.3"
+
+
+  - platform: mqtt
+    name: Radio Schalter Keller
+    state_topic: "/home/stat/r_schalter1/POWER"
+    command_topic: "/home/cmnd/r_schalter1/POWER"
+    availability_topic: "/home/tele/r_schalter1/LWT"
+    qos: 1
+    optimistic: false
+    retain: true
+
+binary_sensor:
+#Fernsehen
+  - platform: ping
+    name: dm500plus Tracker
+    count: 2
+    host: dm500plus.fritz.box
+
+  - platform: ping
+    name: pi-radio2 Tracker
+    count: 2
+    host: pi-radio2.fritz.box
+
+#NAS
+  - platform: ping
+    name: Nas3 Tracker
+    count: 2
+    host: 10.10.0.4
+
+  - platform: ping
+    name: Wolfgang da2 Tracker
+    count: 2
+    host: 10.10.0.3
+
+  - platform: mqtt
+    name: Licht Keller Flur Taste
+    state_topic: "/home/cmnd/LKellerFlurex/POWER1"
+
+
+sensor:
+  - platform: mqtt
+    name: Licht Keller Flur Wlan
+    state_topic: "/home/tele/LKellerFlur/STATE"
+    unit_of_measurement: "%"
+    value_template:  "{{value_json['Wifi'].RSSI}}"
+
+  - platform: mqtt
+    name: Licht Keller Flur V
+    state_topic: "/home/tele/LKellerFlur/STATE"
+    unit_of_measurement: "V"
+    value_template:  "{{value_json.Vcc}}"
+
+  - platform: mqtt
+    name: Licht Keller Flur LZ
+    state_topic: "/home/tele/LKellerFlur/STATE"
+    value_template:  "{{value_json.Uptime}}"
+
+  - platform: mqtt
+    name: Licht Keller Flur Temperatur
+    state_topic: "/home/tele/LKellerFlur/SENSOR"
+    unit_of_measurement: "°C"
+    value_template:  "{{value_json['HTU21'].Temperature}}"
+
+  - platform: mqtt
+    name: Licht Keller Flur Feuchte
+    state_topic: "/home/tele/LKellerFlur/SENSOR"
+    unit_of_measurement: "%"
+    value_template:  "{{value_json['HTU21'].Humidity}}"
+
+#qnap
+
+  - platform: qnap
+    state_topic: "home/technik"
+    name: Wolfgang da2 Status
+    host: 10.10.0.3
+    username: !secret fritz_user
+    password: !secret normal_password
+    timeout: 30
+    monitored_conditions:
+      - status
+      - cpu_usage
+      - memory_percent_used
+      - network_tx
+      - network_rx
+      - volume_percentage_used
+      - drive_smart_status
+
+  - platform: synologydsm
+    host: 10.10.0.4
+    port: 5000
+    username: status
+    password: !secret normal_password
+    monitored_conditions:
+      - network_up
+      - network_down
+      - disk_status
+      - disk_smart_status
+      - disk_temp
+      - volume_percentage_used
+      - volume_disk_temp_avg
+      - volume_disk_temp_max
+
+  - platform: mqtt
+    name: Radio Schalter Keller Wlan
+    state_topic: "/home/tele/r_schalter1/STATE"
+    unit_of_measurement: "%"
+    value_template:  "{{value_json['Wifi'].RSSI}}"
+
+  - platform: mqtt
+    name: Radio Schalter Keller V
+    state_topic: "/home/tele/r_schalter1/STATE"
+    unit_of_measurement: "V"
+    value_template:  "{{value_json.Vcc}}"
+
+  - platform: mqtt
+    name: Radio Schalter Keller LZ
+    state_topic: "/home/tele/r_schalter1/STATE"
+    value_template:  "{{value_json.Uptime}}"
+
+  - platform: mqtt
+    name: Keller Temperatur
+    state_topic: "/home/tele/r_schalter1/SENSOR"
+    unit_of_measurement: "°C"
+    value_template:  "{{value_json['HTU21'].Temperature}}"
+
+  - platform: mqtt
+    name: Keller Feuchte
+    state_topic: "/home/tele/r_schalter1/SENSOR"
+    unit_of_measurement: "%"
+    value_template:  "{{value_json['HTU21'].Humidity}}"
+
+history_graph:
+  gr10:
+    name: Keller Graph
+    entities:
+     - sensor.keller_temperatur
+     - sensor.keller_feuchte
+     - sensor.licht_keller_flur_temperatur
+     - sensor.licht_keller_flur_feuchte
+    hours_to_show: 240
+    refresh: 60
+
+light:
+  - platform: mqtt
+    name: Licht Keller Flur
+    state_topic: "/home/stat/LKellerFlur/POWER"
+    command_topic: "/home/cmnd/LKellerFlur/POWER"
+    availability_topic: "/home/tele/LKellerFlur/LWT"
+    qos: 1
+    optimistic: false
+    retain: true
+
+input_number:
+
+  in_licht_keller_flur:
+    name: Licht Keller Flur Zeit
+    mode: slider
+    min: 10
+    max: 360
+    step: 1
+
+automation:
+
+  - alias: Licht Keller Flur An
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.licht_keller_flur_taste
+        to: "on"
+        for:
+          seconds: 4
+    action:
+      - service: light.turn_on
+        entity_id: light.licht_keller_flur
+
+  - alias: Licht Keller Flur Timer Start
+    trigger:
+      platform: state
+      entity_id: binary_sensor.licht_keller_flur_taste
+      from: 'on'
+      to: 'off'
+    action:
+      service: script.turn_on
+      entity_id: script.licht_keller_flur_motion
+
+  - alias: Licht Keller Flur Timer Cancel
+    trigger:
+      platform: state
+      entity_id: binary_sensor.licht_keller_flur_taste
+      from: 'off'
+      to: 'on'
+    action:
+      service: script.turn_off
+      entity_id: script.licht_keller_flur_motion  
+
+  - alias: "Keller Radio an started from Harmony Hub"
+    trigger:
+      platform: state
+      entity_id: remote.wohnzimmer
+    condition:
+      condition: template
+      value_template: '{{ trigger.to_state.attributes.current_activity == "RSH Keller An" }}'
+    action:
+      - service: input_select.select_option
+        entity_id: input_select.remote
+        data:
+          option: "RSH Keller An"
+      - service: switch.turn_on
+        entity_id: switch.radio_schalter_keller
+      - service: switch.turn_on
+        entity_id: switch.sw_mpd_hrs
+      - service: notify.wolfhome
+        data:
+         title: '*Radio Keller*'
+         message: ' an Schalter' 
+
+  - alias: "Keller Radio aus started from Harmony Hub"
+    trigger:
+      platform: state
+      entity_id: remote.wohnzimmer
+    condition:
+      condition: template
+      value_template: '{{ trigger.to_state.attributes.current_activity == "RSH Keller aus" }}'
+    action:
+      - service: input_select.select_option
+        entity_id: input_select.remote
+        data:
+          option: "RSH Keller aus"
+      - service: switch.turn_off
+        entity_id: switch.radio_schalter_keller
+      - service: notify.wolfhome
+        data:
+         title: '*Radio Keller*'
+         message: ' aus Schalter' 
+
+script:
+  licht_keller_flur_motion:
+    sequence:
+      - delay: >-
+          {% set duration = states.input_number.in_licht_keller_flur.state | int %}
+          {% if duration > 0 %}
+            {% set duration = duration - 1 %}
+          {% endif %}
+          {% set seconds = duration % 60 %}
+          {% set minutes = (duration / 60)|int % 60 %}
+          {% set hours = (duration / 3600)|int %}
+          {{ [hours, minutes, seconds]|join(':') }}
+      - service: light.turn_off
+        data_template:
+          entity_id: light.licht_keller_flur
+
+
+group:
+  g_nas3:
+    name: Nas 3
+    entities:
+    - weblink.nas3_web
+    - switch.nas3_wake
+    - sensor.network_down
+    - sensor.network_up
+    - sensor.average_disk_temp_volume_1
+    - sensor.maximum_disk_temp_volume_1
+    - sensor.volume_used_volume_1
+    - sensor.average_disk_temp_volume_2
+    - sensor.maximum_disk_temp_volume_2
+    - sensor.volume_used_volume_2
+    - sensor.status_sda
+    - sensor.status_sdb
+    - sensor.status_smart_sda
+    - sensor.status_smart_sdb
+
+  g_wolfgang_da2:
+    name: Nas 2
+    entities:
+    - weblink.wolfgang_da2_web
+    - switch.wolfgang_da2_wake
+    - sensor.wolfgangda2_cpu_usage
+    - sensor.wolfgangda2_memory_usage
+    - sensor.wolfgangda2_network_up_eth0
+    - sensor.wolfgangda2_network_down_eth0
+    - sensor.wolfgangda2_status
+    - sensor.wolfgangda2_volume_used_volume_1
+    - sensor.wolfgangda2_smart_status_drive_1
+    - sensor.wolfgangda2_volume_used_volume_2
+    - sensor.wolfgangda2_smart_status_drive_2
+
+  g_licht_keller_flur:
+    name: Licht Keller Flur
+    entities:
+    - weblink.licht_keller_flur_web
+    - light.licht_keller_flur
+    - input_number.in_licht_keller_flur
+    - sensor.licht_keller_flur_wlan
+    - sensor.licht_keller_flur_v
+    - sensor.licht_keller_flur_lz
+    - binary_sensor.licht_keller_flur_taste
+
+  g_keller_tracker:    
+    name: Keller Tracker
+    entities:
+    - binary_sensor.dm500plus_tracker
+    - binary_sensor.piradio2_tracker
+    - binary_sensor.nas3_tracker
+    - binary_sensor.wolfgang_da2_tracker
+
+  g_radio_schalter_keller:
+    name: Gruppe Radio Schalter Keller 
+    view: no
+    entities:
+    - weblink.radio_schalter_keller_web
+    - switch.radio_schalter_keller
+    - sensor.radio_schalter_keller_wlan
+    - sensor.radio_schalter_keller_v
+    - sensor.radio_schalter_keller_lz
+
+  g_keller_radio:
+    name: Radio Keller 
+    view: no
+    entities:
+    - group.g_radio_schalter_keller
+    - media_player.snapcast_client_26b35c57806c4797b27cd6e878effeb5
+
+  g_keller_sensor:
+    name: Keller Sensor
+    view: no
+    entities:
+    - sensor.keller_temperatur
+    - sensor.keller_feuchte
+    - sensor.licht_keller_flur_temperatur
+    - sensor.licht_keller_flur_feuchte
+
+  g_keller:
+    view: yes
+    name: Keller
+    icon: mdi:stairs
+    entities:
+    - group.g_keller_tracker
+    - group.g_keller_sensor
+    - group.g_licht_keller_flur
+    - history_graph.keller_graph
+    - group.g_nas3
+    - group.g_wolfgang_da2
+    - group.g_keller_radio
+

@@ -1,0 +1,237 @@
+homeassistant:
+  customize:
+    binary_sensor.bs_drucker:
+      icon: mdi:printer
+      friendly_name: Drucker
+    binary_sensor.bs_fritz_box_7590:
+      friendly_name: Fritz Box 7590
+      icon: mdi:raspberrypi
+
+
+
+
+binary_sensor:
+
+#Fritzbox    
+
+  - platform: ping
+    name: Fritz Box 7590 Tracker
+    count: 2
+    host: fritz.box
+
+
+  - platform: ping
+    name: Drucker Tracker
+    count: 2
+    host: Drucker.fritz.box
+
+
+  - platform: mqtt
+    name: Licht Treppe Speicher Taste
+    state_topic: "/home/cmnd/LTreppeObenex/POWER1"
+
+
+sensor:
+  - platform: mqtt
+    name: Licht Treppe Speicher Wlan
+    state_topic: "/home/tele/LTreppeOben/STATE"
+    unit_of_measurement: "%"
+    value_template:  "{{value_json['Wifi'].RSSI}}"
+
+  - platform: mqtt
+    name: Licht Treppe Speicher V
+    state_topic: "/home/tele/LTreppeOben/STATE"
+    unit_of_measurement: "V"
+    value_template:  "{{value_json.Vcc}}"
+
+  - platform: mqtt
+    name: Licht Treppe Speicher LZ
+    state_topic: "/home/tele/LTreppeOben/STATE"
+    value_template:  "{{value_json.Uptime}}"
+
+  - platform: mqtt
+    name: Treppe Speicher Temperatur
+    state_topic: "/home/tele/LTreppeOben/SENSOR"
+    unit_of_measurement: "°C"
+    value_template:  "{{value_json['HTU21'].Temperature}}"
+
+  - platform: mqtt
+    name: Treppe Speicher Feuchte
+    state_topic: "/home/tele/LTreppeOben/SENSOR"
+    unit_of_measurement: "%"
+    value_template:  "{{value_json['HTU21'].Humidity}}"
+
+# Fritzbox
+  - platform: fritzbox_netmonitor
+    state_topic: "home/technik/fritz"
+    Host: fritz.box
+
+  - platform: fritzbox_callmonitor
+    state_topic: "home/technik/fritz"
+    name: s_fritz_callmonitor
+    host: 10.10.0.1
+    username: !secret fritz_user2
+    password: !secret fritz_user2_pw
+    phonebook: 0
+    prefixes:
+      - !secret fritz_de
+      - !secret fritz_dedo
+      - !secret fritz_do
+
+  - platform: template
+    sensors:
+      fritz_transmission_down_speed:
+        friendly_name: "Aktuelle Datenrate down"
+        unit_of_measurement: 'kbit/s'
+        value_template: "{{ '{:.0f}'.format(states.sensor.fritz_netmonitor.attributes.transmission_rate_down|float/ 1024*8) }}"  
+      fritz_transmission_up_speed:
+        friendly_name: "Aktuelle Datenrate up"
+        unit_of_measurement: 'kbit/s'
+        value_template: "{{ '{:.0f}'.format(states.sensor.fritz_netmonitor.attributes.transmission_rate_up|float/ 1024*8) }}" 
+      fritz_max_down_speed:
+        friendly_name: "Leitungskapazität down"
+        unit_of_measurement: 'kbit/s'
+        value_template: "{{ '{:.0f}'.format(states.sensor.fritz_netmonitor.attributes.max_byte_rate_down|float/ 1024*8) }}"  
+      fritz_max_up_speed:
+        friendly_name: "Leitungskapazität up"
+        unit_of_measurement: 'kbit/s'
+        value_template: "{{ '{:.0f}'.format(states.sensor.fritz_netmonitor.attributes.max_byte_rate_up|float/ 1024*8) }}" 
+      fritz_received:
+        friendly_name: "Empfangen"
+        unit_of_measurement: 'kbit/s'
+        value_template: "{{ '{:.0f}'.format(states.sensor.fritz_netmonitor.attributes.bytes_received|float/ 1024*8) }}"  
+      fritz_send:
+        friendly_name: "Gesendet"
+        unit_of_measurement: 'kbit/s'
+        value_template: "{{ '{:.0f}'.format(states.sensor.fritz_netmonitor.attributes.bytes_sent|float/ 1024*8) }}" 
+
+
+
+light:
+  - platform: mqtt
+    name: Licht Treppe Speicher
+    state_topic: "/home/stat/LTreppeOben/POWER"
+    command_topic: "/home/cmnd/LTreppeOben/POWER"
+    availability_topic: "/home/tele/LTreppeOben/LWT"
+    qos: 1
+    optimistic: false
+    retain: true
+
+input_number:
+
+  in_licht_treppe_speicher:
+    name: Licht Treppe Speicher Zeit
+    mode: slider
+    min: 10
+    max: 360
+    step: 1
+
+history_graph:
+  gr30:
+    name: Oben Graph
+    entities:
+    - sensor.treppe_speicher_temperatur
+    - sensor.treppe_speicher_feuchte
+    hours_to_show: 240
+    refresh: 60
+    
+automation:
+
+  - alias: Licht Treppe Oben An
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.licht_treppe_speicher_taste
+        to: "on"
+        for:
+          seconds: 4
+    action:
+      - service: light.turn_on
+        entity_id: light.licht_treppe_speicher
+
+
+  - alias: Licht Treppe Oben Timer Start
+    trigger:
+      platform: state
+      entity_id: binary_sensor.licht_treppe_speicher_taste
+      from: 'on'
+      to: 'off'
+    action:
+      service: script.turn_on
+      entity_id: script.licht_treppe_speicher_motion
+
+  - alias: Licht Treppe Oben Timer Cancel
+    trigger:
+      platform: state
+      entity_id: binary_sensor.licht_treppe_speicher_taste
+      from: 'off'
+      to: 'on'
+    action:
+      service: script.turn_off
+      entity_id: script.licht_treppe_speicher_motion  
+
+script:
+  licht_treppe_speicher_motion:
+    sequence:
+      - delay: >-
+          {% set duration = states.input_number.in_licht_treppe_speicher.state | int %}
+          {% if duration > 0 %}
+            {% set duration = duration - 1 %}
+          {% endif %}
+          {% set seconds = duration % 60 %}
+          {% set minutes = (duration / 60)|int % 60 %}
+          {% set hours = (duration / 3600)|int %}
+          {{ [hours, minutes, seconds]|join(':') }}
+      - service: light.turn_off
+        data_template:
+          entity_id: light.licht_treppe_speicher
+group:
+
+  g_tracker_oben:    
+    name: Tracker Oben
+    view: no
+    entities:
+    - binary_sensor.drucker_tracker
+    - binary_sensor.fritz_box_7590_tracker
+
+
+  g_fritz_sensor:
+    name: Daten Fritzbox
+    entities:
+    - sensor.fritz_transmission_down_speed
+    - sensor.fritz_transmission_up_speed
+    - sensor.fritz_max_down_speed
+    - sensor.fritz_max_up_speed
+    - sensor.fritz_received
+    - sensor.fritz_send
+
+  g_licht_treppe_oben:
+    name: Licht Treppe Speicher
+    entities:
+    - weblink.licht_treppe_speicher_web
+    - light.licht_treppe_speicher
+    - input_number.in_licht_treppe_speicher
+    - sensor.licht_treppe_speicher_wlan
+    - sensor.licht_treppe_speicher_v
+    - sensor.licht_treppe_speicher_lz
+    - binary_sensor.licht_treppe_speicher_taste
+
+  g_oben_sensor:
+    name: Sensor Oben 
+    view: no
+    entities:
+    - sensor.treppe_speicher_temperatur
+    - sensor.treppe_speicher_feuchte
+
+  g_oben:
+    name: Oben
+    icon: mdi:arrow-up-thick
+    view: yes
+    entities:
+    - group.g_tracker_oben
+    - group.g_oben_sensor
+    - group.g_fritz
+    - group.g_licht_treppe_oben
+    - history_graph.oben_graph
+#    - camera.buro
+
+

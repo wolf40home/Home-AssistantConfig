@@ -1,0 +1,72 @@
+history_graph:
+  gr50:
+    name: Sensoren alle
+    entities:
+     - sensor.speicher_temperatur
+     - sensor.treppe_speicher_temperatur
+     - sensor.wohnzimmer_temperatur
+     - sensor.kueche_temperatur
+     - sensor.vorrat_temperatur
+     - sensor.keller_temperatur
+     - sensor.licht_keller_flur_temperatur
+     - sensor.speicher_feuchte
+     - sensor.treppe_speicher_feuchte
+     - sensor.wohnzimmer_feuchte
+     - sensor.kueche_feuchte
+     - sensor.vorrat_feuchte
+     - sensor.keller_feuchte
+     - sensor.licht_keller_flur_feuchte
+     - sensor.druck
+    hours_to_show: 240
+    refresh: 60
+
+sensor:
+  - platform: min_max
+    type: mean
+    name: Temperatur min/max
+    entity_ids:
+    - sensor.kueche_temperatur
+    - sensor.wohnzimmer_temperatur
+    - sensor.licht_keller_flur_temperatur
+    - sensor.vorrat_temperatur
+    - sensor.treppe_speicher_temperatur
+
+  - platform: min_max
+    type: mean
+    name: Feuchte min/max
+    entity_ids:
+    - sensor.kueche_feuchte
+    - sensor.wohnzimmer_feuchte
+    - sensor.licht_keller_flur_feuchte
+    - sensor.vorrat_feuchte
+    - sensor.treppe_speicher_feuchte
+
+  - platform: min_max
+    type: mean
+    name: Temperatur Nebenräume min/max
+    entity_ids:
+    - sensor.speicher_temperatur
+    - sensor.keller_temperatur
+
+group:
+  g_minmaxsensoren:
+    name: Min/Max Sensoren
+    view: no
+    icon: mdi:chart-line
+    entities:
+    - sensor.temperatur_minmax
+    - sensor.feuchte_minmax
+    - sensor.temperatur_nebenraume_minmax
+
+  g_sensoren:
+    name: Sensoren
+    view: yes
+    control: hidden
+    icon: mdi:chart-line
+    entities:
+    - group.g_keller_sensor
+    - group.g_unten_sensor
+    - group.g_oben_sensor
+    - group.g_speicher_sensor
+    - group.g_minmaxsensoren
+    - history_graph.sensoren_alle

@@ -13,7 +13,7 @@ homeassistant:
   # Include customizations
   #-------------------------------------------
   #-------------------------------------------
-  packages: !include_dir_named _packages
+  packages: !include_dir_named packages
   customize: !include customize.yaml
 
 # Enable configuration UI

@@ -1,0 +1,30 @@
+group:
+  g_media:
+    name: Media
+    view: yes
+    entities:
+    - media_player.pi_media_mpd
+    - binary_sensor.bs_r_taste
+    - media_player.snapcast_group_685b0ba4aa169c9fc274a67d06fd6314
+    - media_player.snapcast_group_8b334ce0fbad2a30d773025e84c8f3a7
+    - media_player.snapcast_client_6aec95f148e44614adcf25c2fafed2c0
+    - media_player.snapcast_client_d5d917ad2f9e480bb350971480de5e5f
+    - group.g_vusolo
+    - media_player.pi_media_kodi
+
+    
+  g_radio:
+    name: Radio
+    control: hidden    
+    view: no
+    entities:
+     - binary_sensor.bs_play_mpd
+     - light.theater_volume
+     - switch.sw_mpd_hrs
+     - switch.sw_mpd_einslive
+     - input_number.in_mpd_volume
+     - input_number.in_mpd_kueche
+     - input_number.in_mpd_wohn
+     - media_player.pi_media_mpd
+     - group.g_pi_k_schalter
+

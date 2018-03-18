@@ -1,0 +1,126 @@
+homeassistant:
+  customize:
+    sensor.ha_version:
+      friendly_name: New Ha Release
+
+    sensor.hass_uptime:
+      friendly_name: Home Assistant Uptime
+      icon: mdi:home-assistant
+    sensor.ha_github_version:
+      friendly_name: "GitHub Version"
+      icon: mdi:github-box
+    sensor.ha_pypi_version:
+      friendly_name: "PyPi Version"
+      icon: mdi:language-python
+    script.update_github:
+      friendly_name: Update Git hub
+      icon: mdi:github-circle
+    script.update_home_assistant_home:
+      friendly_name: Home Assistant Update
+      icon: mdi:update
+
+group:
+  g_homeass_version_card:
+   name: Home Assistant Info
+   entities:
+     - sensor.hass_uptime
+     - sensor.ha_version
+     - sensor.installed_version
+     - sensor.ha_github_version
+     - sensor.ha_pypi_version
+     - script.update_home_assistant_home
+     - input_select.log_level
+     - input_text.commit_text
+     - script.update_github
+
+input_text:
+  commit_text:
+    name: Git Update Message
+
+
+
+sensor:
+  ###### VERSIONS
+  - platform: command_line
+    command: python3 -c "import requests; print(requests.get('https://pypi.python.org/pypi/homeassistant/json').json()['info']['version'])"
+    name: Current Version
+
+  - platform: version
+    name: Installed Version
+
+  - platform: rest
+    name: ha_github_version
+    resource: 'https://api.github.com/repos/home-assistant/home-assistant/releases/latest'
+    headers:
+      accept: application/vnd.github.v3+json
+      content-type: application/json
+      user-agent: home-assistant/rest-sensor
+    value_template: >-
+      {{ value_json.tag_name if value_json.tag_name.split('.')|length != 2 else value_json.tag_name ~ '.0' }}
+    scan_interval: 1800
+
+  - platform: rest
+    name: ha_pypi_version
+    resource: 'https://pypi.python.org/pypi/homeassistant/json'
+    value_template: >-
+      {{ value_json.info.version }}
+    scan_interval: 1800
+
+
+###### CUSTOM HA/Version
+  - platform: template
+    sensors:
+      ha_version:
+        value_template: >-
+          {% if is_state('sensor.current_version', states('sensor.installed_version')) %}
+            {{ states('sensor.installed_version') }}
+          {% else %}
+            {{ states('sensor.current_version') }} Available
+          {% endif %}
+        icon_template: >-
+          {% if is_state('sensor.current_version', states('sensor.installed_version')) %}
+            mdi:checkbox-marked
+          {% else %}
+            mdi:checkbox-blank-outline
+          {% endif %}
+
+  - platform: command_line
+    name: "HASS Uptime"
+    command: echo "$(($(date +%s) - $(date -d "$(head -n1 /home/homeassistant/.homeassistant/home-assistant.log | cut -d' ' -f-2)" +%s)))"
+    scan_interval: 600
+    value_template: >-
+      {% set uptime = value | int %}
+      {% set seconds = uptime % 60 %}
+      {% set minutes = ((uptime % 3600) / 60) | int %}
+      {% set hours = ((uptime % 86400) / 3600) | int %}
+      {% set days = (uptime / 86400) | int %}
+      {%- if days > 0 -%}
+        {%- if days == 1 -%}
+          1 day
+        {%- else -%}
+          {{ days }} days
+        {%- endif -%}
+        {{ ', ' }}
+      {%- endif -%}
+      {{ '%02d' % hours }}:{{ '%02d' % minutes }}
+
+
+automation:
+  - alias: update_notification
+    trigger:
+     - platform: state
+       entity_id: updater.updater
+    action:
+      - service: notify.wolfhome
+        data_template:
+          title: "Home Assistant Software Update"
+          message: >-
+            Home Assistant {{ trigger.to_state.state }} is now available on {{ trigger.to_state.name.split(' ')[0] }}.
+
+script:
+  update_github:
+    sequence:
+      - service: shell_command.update_git
+shell_command:
+  update_git: '/root/.homeassistant/shell/gitupdate.sh "{{ states.input_text.commit_text.state}}"'
+  

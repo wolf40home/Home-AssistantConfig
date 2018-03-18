@@ -1,0 +1,163 @@
+homeassistant:
+  customize:
+    zone.home:
+      friendly_name: Wolfgangs und Barbaras Home
+#Gruppen
+    group.default_view:
+      order: 1
+    group.g_keller:
+      order: 2
+    group.g_unten:
+      order: 3
+    group.g_kueche:
+      order: 4
+    group.g_wohnzimmer:
+      order: 5
+    group.g_oben:
+      order: 6
+    group.g_buero:
+      order: 7
+    group.g_schlafzimmer:
+      order: 8
+    group.g_speicher:
+      order: 9
+    group.g_media:
+      order: 10
+    group.g_technik:
+      order: 99
+    group.g_googlekalender:
+      friendly_name: Google Kalender
+
+#Datum
+    sensor.s_time_date:
+      friendly_name: Datum/Zeit
+    
+sensor:
+  - platform: moon
+    name: Mond
+
+  - platform: template
+    sensors:
+      s_solar_angle:
+        friendly_name: "Sonnenstand"
+        unit_of_measurement: '°'
+        value_template: "{{ '%+.1f'|format(states.sun.sun.attributes.elevation) }}"
+
+  - platform: alpha_vantage
+    api_key: !secret alpha_api
+    symbols:
+    - name: Schneider Electric
+      currency: EUR
+      symbol: SBGSF
+
+    foreign_exchange:
+      - from: EUR
+        to: USD
+        name: Euro
+
+  - platform: yr
+    name: s_weather
+    forecast: 24
+    monitored_conditions:
+      - temperature
+      - symbol
+      - precipitation
+      - windSpeed
+      - pressure
+      - windDirection
+      - humidity
+      - fog
+      - cloudiness
+      - lowClouds
+      - mediumClouds
+      - highClouds
+      - dewpointTemperature
+
+#- platform: dwd_weather_warnings
+#  name: Unwetter_Warnung
+#  region_name: Rhein-Kreis Neuss    
+
+
+  - platform: template
+    sensors:
+      s_day_night:
+        value_template: >-
+          {% if is_state('sun.sun', 'above_horizon') %}
+            Tag
+          {% else %}
+            Nacht
+          {% endif %}
+
+history_graph:
+  gr1:
+    name: Wetter
+    entities:
+      - sensor.s_weather_wind_speed
+      - sensor.s_weather_temperature
+      - sensor.s_weather_dewpoint_temperature
+      - sensor.s_weather_pressure
+      - sensor.s_weather_humidity
+    hours_to_show: 240
+    refresh: 60
+
+  gr4:
+    name: Schneider
+    entities:
+     - sensor.schneider_electric
+    hours_to_show: 2400
+    refresh: 0
+
+group:
+  g_yr_wetter:
+    name: Wetterbericht
+    entities:
+    - sensor.s_weather_symbol
+    - sensor.s_weather_humidity
+    - sensor.s_weather_temperature
+    - sensor.s_weather_dewpoint_temperature
+    - sensor.s_weather_pressure
+    - sensor.s_weather_wind_speed
+    - sensor.s_weather_wind_direction
+    - sensor.s_weather_cloudiness
+    - sensor.s_weather_high_clouds
+    - sensor.s_weather_low_clouds
+    - sensor.s_weather_medium_clouds
+    - sensor.s_weather_fog
+    - sensor.s_weather_precipitation
+#  - sensor.unwetter_warnung_current_warning_level
+
+  g_haupt:
+    name: Informationen
+    view: no
+    icon: mdi:home
+    entities:
+    - weather.openweathermap
+    - sensor.schneider_electric
+    - sun.sun
+    - sensor.mond
+    - sensor.druck
+
+  g_sonne:
+    view: no
+    name: Sonne Schalter
+    entities:
+    - input_number.auto_light_offset_off
+    - input_number.auto_light_offset_on
+
+  g_googlekalender:
+    entities:
+    - calendar.wsteiner10gmailcom
+
+  default_view:
+    view: yes
+    icon: mdi:home
+    entities:
+    - persistent_notification.update_available
+    - group.g_haupt
+    - group.g_radio
+    - camera.borkum
+    - history_graph.wetter
+    - history_graph.schneider
+    - group.g_yr_wetter
+    - group.g_geraete
+    - input_select.theme_select

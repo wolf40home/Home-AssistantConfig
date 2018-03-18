@@ -1,0 +1,106 @@
+
+
+sensor:
+  - platform: mqtt
+    state_topic: "/home/tele/l_schalter_vor/STATE"
+    name: Lade Schalter Vorrat Wlan
+    unit_of_measurement: "%"
+    value_template:  "{{value_json['Wifi'].RSSI}}"
+
+  - platform: mqtt
+    name: Lade Schalter Vorrat V
+    state_topic: "/home/tele/l_schalter_vor/STATE"
+    unit_of_measurement: "V"
+    value_template:  "{{value_json.Vcc}}"
+
+  - platform: mqtt
+    name: Lade Schalter Vorrat LZ
+    state_topic: "/home/tele/l_schalter_vor/STATE"
+    value_template:  "{{value_json.Uptime}}"
+
+  - platform: mqtt
+    name: Vorrat Temperatur
+    state_topic: "/home/tele/l_schalter_vor/SENSOR"
+    unit_of_measurement: "°C"
+    value_template:  "{{value_json['HTU21'].Temperature}}"
+
+  - platform: mqtt
+    name: Vorrat Feuchte
+    state_topic: "/home/tele/l_schalter_vor/SENSOR"
+    unit_of_measurement: "%"
+    value_template:  "{{value_json['HTU21'].Humidity}}"
+
+switch:
+  - platform: mqtt
+    name: Lade Schalter Vorrat
+    state_topic: "/home/stat/l_schalter_vor/POWER"
+    command_topic: "/home/cmnd/l_schalter_vor/POWER"
+    availability_topic: "/home/tele/l_schalter_vor/LWT"
+    qos: 1
+    optimistic: false
+    retain: true
+
+history_graph:
+  gr20:
+    name: Unten Graph
+    entities:
+    - sensor.kueche_temperatur
+    - sensor.kueche_feuchte
+    - sensor.wohnzimmer_temperatur
+    - sensor.wohnzimmer_feuchte
+    - sensor.vorrat_temperatur
+    - sensor.vorrat_feuchte
+    hours_to_show: 240
+    refresh: 60
+
+automation:
+
+
+  - alias: Lade Schalter an
+    trigger:
+      platform: sun
+      event: sunrise
+    action:
+      - service: switch.turn_on
+        entity_id: switch.lade_schalter_vorrat
+      
+
+  - alias: Lade Schalter aus
+    trigger:
+      platform: sun
+      event: sunset
+    action:
+      - service: switch.turn_off
+        entity_id: switch.lade_schalter_vorrat
+
+group:
+  g_lade_schalter_vorrat:
+    name: Gruppe Lade Schalter Vorrat 
+    view: no
+    entities:
+    - weblink.lade_schalter_vorrat_web
+    - switch.lade_schalter_vorrat
+    - sensor.lade_schalter_vorrat_wlan
+    - sensor.lade_schalter_vorrat_v
+    - sensor.lade_schalter_vorrat_lz
+
+  g_unten_sensor:
+    name: Unten Sensor
+    view: no
+    entities:
+    - sensor.kueche_temperatur
+    - sensor.kueche_feuchte
+    - sensor.wohnzimmer_temperatur
+    - sensor.wohnzimmer_feuchte
+    - sensor.vorrat_temperatur
+    - sensor.vorrat_feuchte
+
+  g_unten:
+    view: yes
+    name: Unten
+    entities:
+    - group.g_kueche
+    - group.g_unten_tracker
+    - group.g_lade_schalter_vorrat
+    - group.g_unten_sensor
+    - history_graph.unten_graph

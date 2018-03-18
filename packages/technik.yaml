@@ -1,0 +1,108 @@
+homeassistant:
+  customize:
+    group.all_automations:
+      hidden: false
+    group.all_scripts:
+      hidden: false
+      
+history_graph:
+  grff:
+    name: Internet
+    entities:
+      - sensor.fritz_transmission_down_speed
+      - sensor.fritz_transmission_up_speed
+    hours_to_show: 48
+    refresh: 120
+
+
+group:
+  g_fritz:
+    name: Fritz_Box
+    icon: mdi:access-point-network
+    entities:
+    - weblink.fritz_box
+    - sensor.fritz_netmonitor
+    - sensor.s_fritz_callmonitor
+    - binary_sensor.bs_fritz_repeater
+    - binary_sensor.bs_fritz_box_7390
+    - history_graph.speedtest
+    - history_graph.internet
+
+
+  g_geraete:
+    name: alle
+    control: hidden
+    entities:
+    - binary_sensor.bs_fritz_repeater
+    - binary_sensor.bs_fritz_box_7590
+    - binary_sensor.bs_fritz_box_7390
+    - binary_sensor.bs_wolfgang_da
+    - binary_sensor.bs_wolfgang_da2
+    - binary_sensor.bs_pi_media
+    - device_tracker.win10
+    - device_tracker.ipadvonbarbara
+    - device_tracker.barbarasipad
+    - binary_sensor.bs_radio_kueche
+    - binary_sensor.bs_cook_key
+    - device_tracker.tablet
+    - binary_sensor.bs_drucker
+    - binary_sensor.bs_wolfgang_pc
+    - device_tracker.w7der03852l
+    - device_tracker.wtdelvse044110leurgadschneiderelectriccom
+    - binary_sensor.bs_dm500plus
+    - device_tracker.barbarahandy
+    - device_tracker.samsungsmg920fwolfgangsteiner
+
+
+
+  g_sonoff:
+    name: Sonoff
+    control: hidden
+    entities:
+    - switch.speicher_schalter_basteln
+    - sensor.speicher_schalter_basteln_lz
+    - sensor.speicher_schalter_basteln_wlan
+    - light.licht_treppe_speicher
+    - sensor.licht_treppe_speicher_lz
+    - sensor.licht_treppe_speicher_wlan
+    - cover.rollladen_buero
+    - sensor.rolladen_buero_lz
+    - sensor.rolladen_buero_wlan
+    - sensor.rolladen_schlafzimmer_lz
+    - sensor.rolladen_schlafzimmer_wlan
+    - switch.lade_schalter_vorrat
+    - sensor.lade_schalter_vorrat_wlan
+    - sensor.lade_schalter_vorrat_lz
+    - switch.radio_schalter_kueche
+    - sensor.radio_schalter_kueche_lz
+    - sensor.radio_schalter_kueche_wlan
+    - sensor.schalter_aquarium_lz
+    - sensor.schalter_aquarium_wlan
+    - switch.radio_schalter_keller
+    - sensor.radio_schalter_keller_lz
+    - sensor.radio_schalter_keller_wlan
+    - light.licht_keller_flur
+    - sensor.licht_keller_flur_wlan
+    - sensor.licht_keller_flur_lz
+
+
+  automation_view:
+    name: Automation
+    view: yes
+    entities:
+      - group.all_automations
+      - group.all_scripts
+
+  g_technik:
+    name: Technik
+    icon: mdi:wrench
+    view: yes
+    entities:
+    - group.linux_server_card
+    - group.g_homeass_version_card
+    - group.g_fritz   
+    - group.g_googlekalender
+    - group.g_fritz_sensor
+    - group.all_automations
+    - group.g_sonoff
+

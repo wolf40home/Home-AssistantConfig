@@ -1,0 +1,257 @@
+homeassistant:
+  customize:
+    binary_sensor.piradio_tracker:
+      icon: mdi:raspberrypi
+    binary_sensor.bs_fritz_repeater:
+      friendly_name: Wlan Repeater
+      icon: mdi:raspberrypi
+    binary_sensor.bs_cook_key:
+      friendly_name: Cook Key
+      icon: mdi:food  
+
+binary_sensor:
+  - platform: ping
+    name: Cook Key Tracker
+    count: 2
+    host: Cook-Key.fritz.box
+
+  - platform: ping
+    count: 2
+    host: pi-radio.fritz.box
+    name: pi-radio Tracker
+
+
+  - platform: mqtt
+    name: Radio Schalter Kueche Taste
+    state_topic: "/home/cmnd/r_schalterex/POWER1"
+
+
+sensor:
+  - platform: mqtt
+    state_topic: "/home/tele/r_schalter/STATE"
+    name: Radio Schalter Kueche Wlan
+    unit_of_measurement: "%"
+    value_template:  "{{value_json['Wifi'].RSSI}}"
+
+  - platform: mqtt
+    name: Radio Schalter Kueche V
+    state_topic: "/home/tele/r_schalter/STATE"
+    unit_of_measurement: "V"
+    value_template:  "{{value_json.Vcc}}"
+
+  - platform: mqtt
+    name: Radio Schalter Kueche LZ
+    state_topic: "/home/tele/r_schalter/STATE"
+    value_template:  "{{value_json.Uptime}}"
+
+  - platform: mqtt
+    name: Kueche Temperatur
+    state_topic: "/home/tele/r_schalter/SENSOR"
+    unit_of_measurement: "°C"
+    value_template:  "{{value_json['HTU21'].Temperature}}"
+
+  - platform: mqtt
+    name: Kueche Feuchte
+    state_topic: "/home/tele/r_schalter/SENSOR"
+    unit_of_measurement: "%"
+    value_template:  "{{value_json['HTU21'].Humidity}}"
+
+history_graph:
+
+  gr22:
+    name: Küche Graph
+    entities:
+     - sensor.kueche_temperatur
+     - sensor.kueche_feuchte
+    hours_to_show: 240
+    refresh: 60
+
+switch:
+  - platform: mqtt
+    name: Radio Schalter Kueche
+    state_topic: "/home/stat/r_schalter/POWER"
+    command_topic: "/home/cmnd/r_schalter/POWER"
+    availability_topic: "/home/tele/r_schalter/LWT"
+    payload_available: "online"
+    payload_not_available: "offline"
+    qos: 1
+    optimistic: false
+    retain: true
+
+media_player:
+
+  - platform: kodi
+    name: Kueche Kodi
+    host: amazon-cdea109b9.fritz.box
+
+input_number:
+
+  in_mpd_kueche:
+    name: Küchelautstärke
+    mode: slider
+    min: 0
+    max: 1
+    step: 0.05
+
+automation:
+
+  - alias: Radio An Werktags
+    trigger:
+      platform: time
+      at: 06:00:00
+    condition:
+      condition: state
+      entity_id: binary_sensor.bs_workday
+      state: 'on'
+    action:
+      - service: switch.turn_on
+        entity_id: switch.sw_mpd_hrs
+      - service: media_player.volume_set
+        # Note the use of 'data_template:' below rather than the normal 'data:' if you weren't using an input variable
+        data_template:
+          entity_id: media_player.pi_media_mpd
+          volume_level: 1.0
+      - service: switch.turn_on
+        entity_id: switch.radio_schalter_kueche
+      - service: notify.wolfhome
+        data:
+         title: '*Radio*'
+         message: ' an Werktags' 
+
+  - alias: Radio An MPD
+    trigger:
+      platform: state
+      entity_id: media_player.pi_media_mpd
+      to: 'playing'
+    action:
+     - service: switch.turn_on
+       entity_id: switch.radio_schalter_kueche
+
+  - alias: 'pi-radio ausschalten'
+    trigger:
+      platform: state
+      entity_id: media_player.pi_media_mpd
+      to: 'off'
+    action:
+     - service: switch.turn_off
+       entity_id: switch.radio_schalter_kueche
+
+  - alias: Radio An Schalter
+    trigger:
+      platform: state
+      entity_id: binary_sensor.radio_schalter_kueche_taste
+    condition:
+      condition: and
+      conditions:
+      - condition: state
+        entity_id: binary_sensor.radio_schalter_kueche_taste
+        state: 'on'
+      - condition: state
+        entity_id: binary_sensor.bs_play_mpd
+        state: 'off'
+    action:
+      - service: switch.turn_on
+        entity_id: switch.sw_mpd_hrs
+      - service: switch.turn_on
+        entity_id: switch.radio_schalter_kueche
+      - service: notify.wolfhome
+        data:
+         title: '*Radio*'
+         message: ' an Schalter' 
+      - service: remote.turn_on
+        entity_id: remote.wohnzimmer
+        data:
+          activity: 31664117
+            
+  - alias: Radio Aus Schalter
+    trigger:
+      platform: state
+      entity_id: binary_sensor.radio_schalter_kueche_taste
+    condition:
+      condition: and
+      conditions:
+      - condition: state
+        entity_id: binary_sensor.radio_schalter_kueche_taste
+        state: 'on'
+      - condition: state
+        entity_id: binary_sensor.bs_play_mpd
+        state: 'on'
+    action:
+      - service: media_player.turn_off
+        # Note the use of 'data_template:' below rather than the normal 'data:' if you weren't using an input variable
+        data_template:
+          entity_id: media_player.pi_media_mpd
+      - service: switch.turn_off
+        entity_id: switch.radio_schalter_kueche
+      - service: switch.turn_off
+        entity_id: switch.radio_schalter_keller
+      - service: notify.wolfhome
+        data:
+         title: '*Radio*'
+         message: ' aus Schalter' 
+      - service: remote.turn_off
+        entity_id: remote.wohnzimmer
+
+
+  - alias: Lautstaerke - Kueche
+    trigger:
+      platform: state
+      entity_id: input_number.in_mpd_kueche
+    condition:
+      condition: state
+      entity_id: media_player.pi_media_mpd
+      state: 'playing'
+    action:
+      - service: media_player.volume_set
+        # Note the use of 'data_template:' below rather than the normal 'data:' if you weren't using an input variable
+        data_template:
+          entity_id: media_player.snapcast_client_6aec95f148e44614adcf25c2fafed2c0
+          volume_level: '{{ trigger.to_state.state }}'
+      - service: notify.wolfhome
+        data:
+          title: '*Radio*'
+          message: 'Küchenlautstärke {{ trigger.to_state.state }}' 
+
+group:
+  g_kueche_tracker:
+    view: no
+    name: Tracker Kueche
+    entities:
+    - binary_sensor.cook_key_tracker
+    - binary_sensor.piradio_tracker
+    - device_tracker.tablet
+
+
+
+  g_pi_k_schalter:
+    name: Gruppe Radio Schalter Küche 
+    view: no
+    entities:
+    - weblink.radio_schalter_kuche_web
+    - switch.radio_schalter_kueche
+    - sensor.radio_schalter_kueche_wlan
+    - sensor.radio_schalter_kueche_v
+    - sensor.radio_schalter_kueche_lz
+    - binary_sensor.radio_schalter_kueche_taste
+
+
+
+  g_kueche_sensor:
+    name: Sensor Küche 
+    view: no
+    entities:
+    - sensor.kueche_temperatur
+    - sensor.kueche_feuchte
+
+  g_kueche:
+    view: yes
+    name: kueche
+    icon: mdi:food-fork-drink
+    entities:
+    - group.g_kueche_tracker
+    - group.g_kueche_sensor
+    - history_graph.kuche_graph
+    - group.g_radio
+    - media_player.kueche_kodi
+    - media_player.snapcast_client_6aec95f148e44614adcf25c2fafed2c0
+

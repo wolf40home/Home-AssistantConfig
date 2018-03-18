@@ -1,0 +1,67 @@
+binary_sensor:
+  - platform: workday
+    name: bs_workday
+    country: DE
+    workdays: [ mon, tue, wed, thu, fri ]
+#    province: [NW]
+
+  - platform: template
+    sensors:
+      bs_sun_up:
+        friendly_name: "es ist hell"
+        value_template: >-
+          {{ states.sun.sun.attributes.elevation|float > 0 }}
+
+  - platform: ping
+    count: 2
+    host: 10.10.10.2
+    name: bs_fritz_repeater
+
+  - platform: mqtt
+    name: "bs_mqttgateway_Tracker"
+    state_topic: "/home/OpenMQTTGateway/LWT"
+    payload_on: "online"
+    payload_off: "offline"
+    device_class: "connectivity"
+    
+
+#sensor:
+#  - platform: glances
+#    host: pi-hass.fritz.box
+#    resources:
+#      - 'disk_use_percent'
+#      - 'disk_use'
+#      - 'disk_free'
+#      - 'memory_use_percent'
+#      - 'memory_use'
+#      - 'memory_free'
+#      - 'swap_use_percent'
+#      - 'swap_use'
+#      - 'swap_free'
+#      - 'processor_load'
+#      - 'process_running'
+#      - 'process_total'
+#      - 'process_thread'
+#      - 'process_sleeping'
+#      - 'cpu_temp'
+
+#  - platform: glances
+#    host: pi-radio.fritz.box
+#    resources:
+#      - 'disk_use_percent'
+#      - 'disk_use'
+#      - 'disk_free'
+#      - 'memory_use_percent'
+#      - 'memory_use'
+#      - 'memory_free'
+#      - 'swap_use_percent'
+#      - 'swap_use'
+#      - 'swap_free'
+#      - 'processor_load'
+#      - 'process_running'
+#      - 'process_total'
+#      - 'process_thread'
+#      - 'process_sleeping'
+#      - 'cpu_temp'
+
+

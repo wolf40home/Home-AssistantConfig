@@ -1,0 +1,137 @@
+homeassistant:
+  customize:
+    binary_sensor.wolfgang_pc_tracker:
+      icon: mdi:desktop-classic
+      friendly_name: Wolfgang-PC
+    device_tracker.samsungsmg920fwolfgangsteiner:
+      friendly_name: Händy Wolf
+      icon: mdi:cellphone-iphone
+    device_tracker.wtdelvse044110leurgadschneiderelectriccom:
+      friendly_name: FA. Notebook
+      icon: mdi:laptop
+    device_tracker.w7der03852l:
+      icon: mdi:laptop
+      friendly_name: FA. Notebook PES
+
+
+sensor:
+  - platform: mqtt
+    state_topic: "/home/tele/swbuero/STATE"
+    name: Rolladen Buero Wlan
+    unit_of_measurement: "%"
+    value_template:  "{{value_json['Wifi'].RSSI}}"
+
+  - platform: mqtt
+    name: Rolladen Buero V
+    state_topic: "/home/tele/swbuero/STATE"
+    unit_of_measurement: "V"
+    value_template:  "{{value_json.Vcc}}"
+
+  - platform: mqtt
+    name: Rolladen Buero LZ
+    state_topic: "/home/tele/swbuero/STATE"
+    value_template:  "{{value_json.Uptime}}"
+
+  - platform: mqtt
+    name: Rolladen Buero T1
+    state_topic: "/home/cmnd/swbueroex/POWER1"
+    availability_topic: "/home/tele/swbuero/LWT"
+
+  - platform: mqtt
+    name: Rolladen Buero T2
+    state_topic: "/home/cmnd/swbueroex/POWER2"
+    availability_topic: "/home/tele/swbuero/LWT"
+
+binary_sensor:
+
+  - platform: ping
+    name: wolfgang_pc_tracker
+    count: 2
+    host: wolfgang-pc.fritz.box
+
+
+switch:
+  - platform: mqtt
+    name: Rolladen Buero Dual
+    state_topic: "/home/cmnd/swbueroex/POWER"
+    availability_topic: "/home/tele/swbuero/LWT"
+    command_topic: "/home/cmnd/swbueroex/POWER"
+    qos: 1
+    optimistic: false
+    retain: true
+
+cover:
+  - platform: mqtt
+    name: Rollladen Buero
+    state_topic: "/home/cmnd/swbueroex/POWER"
+    command_topic: "/home/cmnd/swbuero/Backlog"
+    availability_topic: "/home/tele/swbuero/LWT"
+    qos: 0
+    retain: true
+    payload_open: "power1 ON"
+    payload_close: "power2 ON"
+    payload_stop: "power1 OFF;power2 OFF"
+    state_open: "ON"
+    state_closed: "OFF"
+    optimistic: false
+
+automation:
+
+  - alias: Rolladen Buero Auf Manuell
+    trigger:
+      - platform: state
+        entity_id: sensor.rolladen_buero_t1
+        to: "ON"
+    action:
+      - service: cover.open_cover
+        entity_id: cover.rollladen_buero
+      - delay: 0:01    
+      - service: cover.stop_cover
+        entity_id: cover.rollladen_buero
+      - service: switch.turn_on
+        entity_id: switch.rolladen_buero_dual
+
+  - alias: Rolladen Buero Zu Manuell
+    trigger:
+      - platform: state
+        entity_id: sensor.rolladen_buero_t2
+        to: "ON"
+    action:
+      - service: cover.close_cover
+        entity_id: cover.rollladen_buero
+      - delay: 0:01    
+      - service: cover.stop_cover
+        entity_id: cover.rollladen_buero
+      - service: switch.turn_off
+        entity_id: switch.rolladen_buero_dual
+
+group:
+
+  g_buero_tracker:    
+    name: Büro Tracker 
+    view: no
+    entities:
+    - binary_sensor.wolfgang_pc_tracker
+    - device_tracker.w7der03852l
+    - device_tracker.wtdelvse044110l
+
+  g_buero_schalter:
+    name: Buero Rolladen Schalter 
+    view: no
+    entities:
+    - switch.rolladen_buero_dual
+    - sensor.rolladen_buero_wlan
+    - sensor.rolladen_Buero_v
+    - sensor.rolladen_buero_lz
+    - sensor.rolladen_buero_t1
+    - sensor.rolladen_buero_t2
+
+  g_buero:
+    view: yes
+    icon: mdi:paperclip
+    name: Büro
+    entities:
+    - group.g_buero_tracker
+    - group.g_buero_schalter
+    - cover.rollladen_buero
+

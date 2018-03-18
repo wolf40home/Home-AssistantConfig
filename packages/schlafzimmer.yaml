@@ -1,0 +1,107 @@
+sensor:
+  - platform: mqtt
+    state_topic: "/home/tele/swschlaf/STATE"
+    name: Rolladen Schlafzimmer Wlan
+    unit_of_measurement: "%"
+    value_template:  "{{value_json['Wifi'].RSSI}}"
+
+  - platform: mqtt
+    name: Rolladen Schlafzimmer V
+    state_topic: "/home/tele/swschlaf/STATE"
+    unit_of_measurement: "V"
+    value_template:  "{{value_json.Vcc}}"
+
+  - platform: mqtt
+    name: Rolladen Schlafzimmer LZ
+    state_topic: "/home/tele/swschlaf/STATE"
+    value_template:  "{{value_json.Uptime}}"
+
+  - platform: mqtt
+    name: Rolladen Schlafzimmer T1
+    state_topic: "/home/cmnd/swschlafex/POWER1"
+    availability_topic: "/home/tele/swschlaf/LWT"
+
+  - platform: mqtt
+    name: Rolladen Schlafzimmer T2
+    state_topic: "/home/cmnd/swschlafex/POWER2"
+    availability_topic: "/home/tele/swschlaf/LWT"
+
+switch:
+  - platform: mqtt
+    name: Rolladen Schlafzimmer Dual
+    state_topic: "/home/cmnd/swschlafex/POWER"
+    availability_topic: "/home/tele/swschlaf/LWT"
+    command_topic: "/home/cmnd/swschlafex/POWER"
+    qos: 1
+    optimistic: false
+    retain: true
+
+cover:
+  - platform: mqtt
+    name: Rollladen Schlafzimmer
+    state_topic: "/home/cmnd/swschlafex/POWER"
+    command_topic: "/home/cmnd/swschlaf/Backlog"
+    availability_topic: "/home/tele/swschlaf/LWT"
+    payload_open: "power1 ON"
+    payload_close: "power2 ON"
+    payload_stop: "power1 OFF;power2 OFF"
+    state_open: "ON"
+    state_closed: "OFF"
+    payload_available: "online"
+    payload_not_available: "offline"
+    qos: 1
+    optimistic: false
+    retain: true
+
+
+automation:
+
+  - alias: Rolladen Auf Manuell
+    trigger:
+      - platform: state
+        entity_id: sensor.rolladen_schlafzimmer_t1
+        to: "ON"
+    action:
+      - service: cover.open_cover
+        entity_id: cover.rollladen_schlafzimmer
+      - delay: 0:01    
+      - service: cover.stop_cover
+        entity_id: cover.rollladen_schlafzimmer
+      - service: switch.turn_on
+        entity_id: switch.rolladen_schlafzimmer_dual
+
+  - alias: Rolladen Zu Manuell
+    trigger:
+      - platform: state
+        entity_id: sensor.rolladen_schlafzimmer_t2
+        to: "ON"
+    action:
+      - service: cover.close_cover
+        entity_id: cover.rollladen_schlafzimmer
+      - delay: 0:01    
+      - service: cover.stop_cover
+        entity_id: cover.rollladen_schlafzimmer
+      - service: switch.turn_off
+        entity_id: switch.rolladen_schlafzimmer_dual
+
+group:
+  g_schlafzimmer:
+    view: yes
+    icon: mdi:sleep
+    name: Schlafzimmer
+    entities:
+    - group.g_sz_schalter
+    - cover.rollladen_schlafzimmer
+
+  g_sz_schalter:
+    name: Schlafzimmer Rollade Schalter 
+    view: no
+    entities:
+    - switch.rolladen_schlafzimmer_dual
+    - sensor.rolladen_schlafzimmer_wlan
+    - sensor.rolladen_schlafzimmer_v
+    - sensor.rolladen_schlafzimmer_lz
+    - sensor.rolladen_schlafzimmer_t1
+    - sensor.rolladen_schlafzimmer_t2
+
+

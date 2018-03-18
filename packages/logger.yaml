@@ -1,0 +1,79 @@
+logger:
+  default: warning
+  logs:
+    homeassistant.components.rest: warn
+    homeassistant.components.zha: warn
+    homeassistant.components.camera: warn
+    homeassistant.components.sun: warn
+    homeassistant.components.remote: warn
+    homeassistant.components.switch: warn
+    homeassistant.components.sensor: error
+    homeassistant.components.sensor.snmp: critical
+    homeassistant.components.script: warn
+    homeassistant.components.tts: warn
+    homeassistant.components.media_player: warn
+    homeassistant.components.input_select: warn
+    homeassistant.components.input_number: critical
+    homeassistant.components.http: warn
+    homeassistant.components.shell_command: warn
+    homeassistant.components.device_tracker: warn
+    homeassistant.components.mqtt: warn
+    homeassistant.components.automation: warn
+    homeassistant.components.websocket: warn
+    homeassistant.components.discovery: warn
+    homeassistant.components.light: warn
+    homeassistant.components.wink: warn
+    homeassistant.custom_components: warn
+    homeassistant.components.camera.usps: warn
+    homeassistant.components.usps: warn
+    homeassistant.components.sensor.usps: warn
+    homeassistant.components.feedreader: warn
+    homeassistant.components: warn
+    bellows.uart: warn
+    homeassistant.core: warn
+    homeassistant.helpers.script: warn
+    homeassistant.helpers.entity: warn
+    homeassistant.helpers.restore_state: warn
+    homeassistant.loader: warn
+    homeassistant.setup: warn
+    phue: warn
+    plexapi: warn
+    roku: warn
+    dlipower.dlipower: error
+    myusps: warn
+    pubnub: warn
+    homeassistant.components.http.ban: debug
+
+group:
+  logger_input_select_card:
+   name: Log Level
+   entities:
+     - input_select.log_level
+
+  ################### Logger level
+input_select:
+  log_level:
+    name: Log Level
+    options:
+     - warn
+     - fatal
+     - error
+     - warning
+     - warn
+     - info
+     - debug
+     - notset
+    initial: warning
+
+
+  ############################# Sets Logging Level
+automation:
+  - alias: Log Level
+    trigger:
+      - platform: state
+        entity_id: input_select.log_level
+    action:
+      - service: logger.set_level
+        data_template:
+          homeassistant.components: "{{ trigger.to_state.state }}"
+          
