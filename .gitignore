@@ -3,6 +3,7 @@
 !scenes
 !packages
 !custom_components
+!media_player
 !.gitignore
 secrets.yaml
 known_devices.yaml
