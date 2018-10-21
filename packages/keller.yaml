@@ -1,20 +1,9 @@
 homeassistant:
   customize:
-    binary_sensor.dm500plus_tracker:
-      icon: mdi:television
-      friendly_name: DM500 plus
-    binary_sensor.piradio2_tracker:
-      icon: mdi:raspberrypi
-    binary_sensor.nas3_tracker:
-      friendly_name: NAS 3
-      icon: mdi:database
-    binary_sensor.wolfgang_da2_tracker:
-      friendly_name: NAS 2
-      icon: mdi:database
+
     sensor.wolfgangda2_cpu_usage:
       friendly_name: DA 2 CPU Auslastung
-    sensor.wolfgangda_cpu_usage:
-      friendly_name: DA CPU Auslastung
+
 
 switch:
   - platform: wake_on_lan
@@ -30,70 +19,75 @@ switch:
 
   - platform: mqtt
     name: Radio Schalter Keller
-    state_topic: "/home/stat/r_schalter1/POWER"
-    command_topic: "/home/cmnd/r_schalter1/POWER"
-    availability_topic: "/home/tele/r_schalter1/LWT"
+    state_topic: "stat/r_schalter1/POWER"
+    command_topic: "cmnd/r_schalter1/POWER"
+    availability_topic: "tele/r_schalter1/LWT"
     qos: 1
     optimistic: false
-    retain: true
+    retain: false
 
 binary_sensor:
-#Fernsehen
-  - platform: ping
-    name: dm500plus Tracker
-    count: 2
-    host: dm500plus.fritz.box
 
-  - platform: ping
-    name: pi-radio2 Tracker
-    count: 2
-    host: pi-radio2.fritz.box
 
 #NAS
-  - platform: ping
-    name: Nas3 Tracker
-    count: 2
-    host: 10.10.0.4
 
-  - platform: ping
-    name: Wolfgang da2 Tracker
-    count: 2
-    host: 10.10.0.3
 
   - platform: mqtt
     name: Licht Keller Flur Taste
-    state_topic: "/home/cmnd/LKellerFlurex/POWER1"
+    state_topic: "cmnd/LKellerFlurex/POWER1"
 
+  - platform: mqtt
+    name: "Fenster Contact Keller L"
+    state_topic: 'home/OpenFensterKellerL'
+    payload_on: 'on'
+    payload_off: 'off'
+    device_class: window
+
+  - platform: mqtt
+    name: "Fenster Contact Keller R"
+    state_topic: 'home/OpenFensterKellerR'
+    payload_on: 'on'
+    payload_off: 'off'
+    device_class: window
 
 sensor:
   - platform: mqtt
     name: Licht Keller Flur Wlan
-    state_topic: "/home/tele/LKellerFlur/STATE"
+    state_topic: "tele/LKellerFlur/STATE"
     unit_of_measurement: "%"
     value_template:  "{{value_json['Wifi'].RSSI}}"
+  - platform: mqtt
+    state_topic: "tele/LKellerFlur/STATE"
+    name: Licht Keller Flur SSId
+    value_template:  "{{value_json['Wifi'].SSId}}"
 
   - platform: mqtt
     name: Licht Keller Flur V
-    state_topic: "/home/tele/LKellerFlur/STATE"
+    state_topic: "tele/LKellerFlur/STATE"
     unit_of_measurement: "V"
     value_template:  "{{value_json.Vcc}}"
 
   - platform: mqtt
     name: Licht Keller Flur LZ
-    state_topic: "/home/tele/LKellerFlur/STATE"
+    state_topic: "tele/LKellerFlur/STATE"
     value_template:  "{{value_json.Uptime}}"
 
   - platform: mqtt
+    name: Licht Keller Flur Version
+    state_topic: "tele/LKellerFlur/STATUS2"
+    value_template:  "{{value_json['StatusFWR'].Version}}"
+    
+  - platform: mqtt
     name: Licht Keller Flur Temperatur
-    state_topic: "/home/tele/LKellerFlur/SENSOR"
+    state_topic: "tele/LKellerFlur/STATUS10"
     unit_of_measurement: "°C"
-    value_template:  "{{value_json['HTU21'].Temperature}}"
+    value_template:  "{{(value_json.StatusSNS.HTU21.Temperature| float + 0.1)| round(1)}}"
 
   - platform: mqtt
     name: Licht Keller Flur Feuchte
-    state_topic: "/home/tele/LKellerFlur/SENSOR"
+    state_topic: "tele/LKellerFlur/STATUS10"
     unit_of_measurement: "%"
-    value_template:  "{{value_json['HTU21'].Humidity}}"
+    value_template:  "{{(value_json.StatusSNS.HTU21.Humidity| float + 2.9)| round(1)}}"
 
 #qnap
 
@@ -116,11 +110,14 @@ sensor:
   - platform: synologydsm
     host: 10.10.0.4
     port: 5000
+    ssl: false
     username: status
     password: !secret normal_password
     monitored_conditions:
       - network_up
       - network_down
+      - cpu_total_load
+      - memory_real_usage
       - disk_status
       - disk_smart_status
       - disk_temp
@@ -130,32 +127,41 @@ sensor:
 
   - platform: mqtt
     name: Radio Schalter Keller Wlan
-    state_topic: "/home/tele/r_schalter1/STATE"
+    state_topic: "tele/r_schalter1/STATE"
     unit_of_measurement: "%"
     value_template:  "{{value_json['Wifi'].RSSI}}"
+  - platform: mqtt
+    state_topic: "tele/r_schalter1/STATE"
+    name: Radio Schalter Keller SSId
+    value_template:  "{{value_json['Wifi'].SSId}}"
 
   - platform: mqtt
     name: Radio Schalter Keller V
-    state_topic: "/home/tele/r_schalter1/STATE"
+    state_topic: "tele/r_schalter1/STATE"
     unit_of_measurement: "V"
     value_template:  "{{value_json.Vcc}}"
 
   - platform: mqtt
     name: Radio Schalter Keller LZ
-    state_topic: "/home/tele/r_schalter1/STATE"
+    state_topic: "tele/r_schalter1/STATE"
     value_template:  "{{value_json.Uptime}}"
 
   - platform: mqtt
+    name: Radio Schalter Keller Version
+    state_topic: "tele/r_schalter1/STATUS2"
+    value_template:  "{{value_json['StatusFWR'].Version}}"
+    
+  - platform: mqtt
     name: Keller Temperatur
-    state_topic: "/home/tele/r_schalter1/SENSOR"
+    state_topic: "tele/r_schalter1/STATUS10"
     unit_of_measurement: "°C"
-    value_template:  "{{value_json['HTU21'].Temperature}}"
+    value_template:  "{{(value_json.StatusSNS.HTU21.Temperature| float + 0.9)| round(1)}}"
 
   - platform: mqtt
     name: Keller Feuchte
-    state_topic: "/home/tele/r_schalter1/SENSOR"
+    state_topic: "tele/r_schalter1/STATUS10"
     unit_of_measurement: "%"
-    value_template:  "{{value_json['HTU21'].Humidity}}"
+    value_template:  "{{(value_json.StatusSNS.HTU21.Humidity| float + 2.2)| round(1)}}"
 
 history_graph:
   gr10:
@@ -171,12 +177,12 @@ history_graph:
 light:
   - platform: mqtt
     name: Licht Keller Flur
-    state_topic: "/home/stat/LKellerFlur/POWER"
-    command_topic: "/home/cmnd/LKellerFlur/POWER"
-    availability_topic: "/home/tele/LKellerFlur/LWT"
+    state_topic: "tele/LKellerFlur/POWER"
+    command_topic: "cmnd/LKellerFlur/POWER"
+    availability_topic: "tele/LKellerFlur/LWT"
     qos: 1
     optimistic: false
-    retain: true
+    retain: false
 
 input_number:
 
@@ -184,7 +190,7 @@ input_number:
     name: Licht Keller Flur Zeit
     mode: slider
     min: 10
-    max: 360
+    max: 40
     step: 1
 
 automation:
@@ -194,8 +200,6 @@ automation:
       - platform: state
         entity_id: binary_sensor.licht_keller_flur_taste
         to: "on"
-        for:
-          seconds: 4
     action:
       - service: light.turn_on
         entity_id: light.licht_keller_flur
@@ -240,6 +244,15 @@ automation:
         data:
          title: '*Radio Keller*'
          message: ' an Schalter' 
+  - alias: Keller Radio An FB
+    trigger:
+      platform: state
+      entity_id: binary_sensor.gt9000_197432_3
+      from: 'off'
+      to: 'on'
+    action:
+      - service: switch.turn_on
+        entity_id: switch.radio_schalter_keller
 
   - alias: "Keller Radio aus started from Harmony Hub"
     trigger:
@@ -259,6 +272,16 @@ automation:
         data:
          title: '*Radio Keller*'
          message: ' aus Schalter' 
+
+  - alias: Keller Radio Aus FB
+    trigger:
+      platform: state
+      entity_id: binary_sensor.gt9000_197432_3
+      from: 'on'
+      to: 'off'
+    action:
+      - service: switch.turn_off
+        entity_id: switch.radio_schalter_keller
 
 script:
   licht_keller_flur_motion:
@@ -285,10 +308,10 @@ group:
     - switch.nas3_wake
     - sensor.network_down
     - sensor.network_up
-    - sensor.average_disk_temp_volume_1
+    - sensor.temperature_sda
     - sensor.maximum_disk_temp_volume_1
     - sensor.volume_used_volume_1
-    - sensor.average_disk_temp_volume_2
+    - sensor.temperature_sdb
     - sensor.maximum_disk_temp_volume_2
     - sensor.volume_used_volume_2
     - sensor.status_sda
@@ -325,10 +348,13 @@ group:
   g_keller_tracker:    
     name: Keller Tracker
     entities:
-    - binary_sensor.dm500plus_tracker
-    - binary_sensor.piradio2_tracker
-    - binary_sensor.nas3_tracker
-    - binary_sensor.wolfgang_da2_tracker
+    - device_tracker.dm500plus
+    - device_tracker.piradio2fritzbox
+    - device_tracker.rschalter1fritzbox
+    - device_tracker.lkellerflur
+    - device_tracker.wlankeller
+    - device_tracker.nas3
+    - device_tracker.wolfgangda2
 
   g_radio_schalter_keller:
     name: Gruppe Radio Schalter Keller 
@@ -340,12 +366,7 @@ group:
     - sensor.radio_schalter_keller_v
     - sensor.radio_schalter_keller_lz
 
-  g_keller_radio:
-    name: Radio Keller 
-    view: no
-    entities:
-    - group.g_radio_schalter_keller
-    - media_player.snapcast_client_26b35c57806c4797b27cd6e878effeb5
+
 
   g_keller_sensor:
     name: Keller Sensor
@@ -355,6 +376,10 @@ group:
     - sensor.keller_feuchte
     - sensor.licht_keller_flur_temperatur
     - sensor.licht_keller_flur_feuchte
+    - binary_sensor.fenster_contact_keller_l
+    - binary_sensor.fenster_contact_keller_r
+    - binary_sensor.fenster_contact_keller_l_alarm
+    - binary_sensor.fenster_contact_keller_r_alarm
 
   g_keller:
     view: yes
@@ -367,5 +392,6 @@ group:
     - history_graph.keller_graph
     - group.g_nas3
     - group.g_wolfgang_da2
-    - group.g_keller_radio
+    - group.g_radio_schalter_keller
+    - media_player.snapcast_client_26b35c57806c4797b27cd6e878effeb5_2
 

@@ -1,60 +1,154 @@
-homeassistant:
-  customize:
-    binary_sensor.piradio_tracker:
-      icon: mdi:raspberrypi
-    binary_sensor.bs_fritz_repeater:
-      friendly_name: Wlan Repeater
-      icon: mdi:raspberrypi
-    binary_sensor.bs_cook_key:
-      friendly_name: Cook Key
-      icon: mdi:food  
+#homeassistant:
+#  customize:
+  
+
+
 
 binary_sensor:
-  - platform: ping
-    name: Cook Key Tracker
-    count: 2
-    host: Cook-Key.fritz.box
-
-  - platform: ping
-    count: 2
-    host: pi-radio.fritz.box
-    name: pi-radio Tracker
-
 
   - platform: mqtt
     name: Radio Schalter Kueche Taste
-    state_topic: "/home/cmnd/r_schalterex/POWER1"
+    state_topic: "cmnd/r_schalterex/POWER1"
 
+  - platform: mqtt
+    name: "Tuer Contact Kueche"
+    state_topic: 'home/OpenDoorKueche'
+    payload_on: 'on'
+    payload_off: 'off'
+    device_class: door
 
+  - platform: mqtt
+    name: "Fenster Contact Kueche"
+    state_topic: 'home/OpenFensterKueche'
+    payload_on: 'on'
+    payload_off: 'off'
+    device_class: window
+    
+  - platform: mqtt
+    name: "Tuer Contact Kueche Alarm"
+    state_topic: "tele/rfbridge/RFRECEIVED"
+    payload_on: "C716EB"
+    payload_off: "C716E7"
+    qos: 0
+    device_class: battery
+    value_template: '{{ value_json.RfReceived.Data }}'
+
+    
+  - platform: mqtt
+    name: "Fenster Contact Kueche Alarm"
+    state_topic: "tele/rfbridge/RFRECEIVED"
+    payload_on: "0F83EB"
+    payload_off: "0F83E7"
+    qos: 0
+    device_class: battery
+    value_template: '{{ value_json.RfReceived.Data }}'
+    
 sensor:
   - platform: mqtt
-    state_topic: "/home/tele/r_schalter/STATE"
+    state_topic: "tele/r_schalter/STATE"
     name: Radio Schalter Kueche Wlan
     unit_of_measurement: "%"
     value_template:  "{{value_json['Wifi'].RSSI}}"
+  - platform: mqtt
+    state_topic: "tele/r_schalter/STATE"
+    name: Radio Schalter Kueche SSId
+    value_template:  "{{value_json['Wifi'].SSId}}"
 
   - platform: mqtt
     name: Radio Schalter Kueche V
-    state_topic: "/home/tele/r_schalter/STATE"
+    state_topic: "tele/r_schalter/STATE"
     unit_of_measurement: "V"
     value_template:  "{{value_json.Vcc}}"
 
   - platform: mqtt
     name: Radio Schalter Kueche LZ
-    state_topic: "/home/tele/r_schalter/STATE"
+    state_topic: "tele/r_schalter/STATE"
     value_template:  "{{value_json.Uptime}}"
 
   - platform: mqtt
+    name: Radio Schalter Kueche Version
+    state_topic: "tele/r_schalter/STATUS2"
+    value_template:  "{{value_json['StatusFWR'].Version}}"
+    
+  - platform: mqtt
     name: Kueche Temperatur
-    state_topic: "/home/tele/r_schalter/SENSOR"
+    state_topic: "tele/r_schalter/STATUS10"
     unit_of_measurement: "°C"
-    value_template:  "{{value_json['HTU21'].Temperature}}"
+    value_template:  "{{(value_json.StatusSNS.HTU21.Temperature| float - 3.0)| round(1)}}"
 
   - platform: mqtt
     name: Kueche Feuchte
-    state_topic: "/home/tele/r_schalter/SENSOR"
+    state_topic: "tele/r_schalter/STATUS10"
     unit_of_measurement: "%"
-    value_template:  "{{value_json['HTU21'].Humidity}}"
+    value_template:  "{{(value_json.StatusSNS.HTU21.Humidity| float + 13.0)| round(1)}}"
+
+# POW
+  - platform: mqtt
+    state_topic: "tele/pkaffee/STATE"
+    name: Pow Kaffee Wlan
+    unit_of_measurement: "%"
+    value_template:  "{{value_json['Wifi'].RSSI}}"
+  - platform: mqtt
+    state_topic: "tele/pkaffee/STATE"
+    name: Pow Kaffee SSId
+    value_template:  "{{value_json['Wifi'].SSId}}"
+
+  - platform: mqtt
+    name: Pow Kaffee V
+    state_topic: "tele/pkaffee/STATE"
+    unit_of_measurement: "V"
+    value_template:  "{{value_json.Vcc}}"
+
+  - platform: mqtt
+    name: Pow Kaffee LZ
+    state_topic: "tele/pkaffee/STATE"
+    value_template:  "{{value_json.Uptime}}"
+    
+  - platform: mqtt
+    name: Pow Kaffee Version
+    state_topic: "tele/pkaffee/STATUS2"
+    value_template:  "{{value_json['StatusFWR'].Version}}"
+  - platform: mqtt
+    name: "Pow Garage Today"
+    state_topic: "tele/pgarage/STATUS10"
+    value_template: '{{ value_json.StatusSNS.ENERGY.Today }}'
+    
+  - platform: mqtt
+    name: "Pow Kaffee Today"
+    state_topic: "tele/pkaffee/STATUS10"
+    value_template: '{{ value_json.StatusSNS.ENERGY.Today }}'
+    unit_of_measurement: "kWh"
+  - platform: mqtt
+    name: "Pow Kaffee Power"
+    state_topic: "tele/pkaffee/STATUS10"
+    value_template: '{{ value_json.StatusSNS.ENERGY.Power }}'
+    unit_of_measurement: "W"
+  - platform: mqtt
+    name: "Pow Kaffee Voltage"
+    state_topic: "tele/pkaffee/STATUS10"
+    value_template: '{{ value_json.StatusSNS.ENERGY.Voltage }}'
+    unit_of_measurement: "V"
+  - platform: mqtt
+    name: "Pow Kaffee Current"
+    state_topic: "tele/pkaffee/STATUS10"
+    value_template: '{{ value_json.StatusSNS.ENERGY.Current }}'
+    unit_of_measurement: "A"
+    
+  - platform: mqtt
+    name: "Pow Kaffee Yesterday"
+    state_topic: "tele/pkaffee/STATUS10"
+    value_template: '{{ value_json.StatusSNS.ENERGY.Yesterday }}'
+    unit_of_measurement: "kWh"
+  - platform: mqtt
+    name: "Pow Kaffee Total"
+    state_topic: "tele/pkaffee/STATUS10"
+    value_template: '{{ value_json.StatusSNS.ENERGY.Total }}'
+    unit_of_measurement: "kWh"
+  - platform: mqtt
+    name: "Pow Kaffee Factor"
+    state_topic: "tele/pkaffee/STATUS10"
+    value_template: '{{ value_json.StatusSNS.ENERGY.Factor }}'
+
 
 history_graph:
 
@@ -63,17 +157,26 @@ history_graph:
     entities:
      - sensor.kueche_temperatur
      - sensor.kueche_feuchte
+     - sensor.pow_kaffee_voltage
+     - sensor.pow_kaffee_current
     hours_to_show: 240
     refresh: 60
 
 switch:
   - platform: mqtt
     name: Radio Schalter Kueche
-    state_topic: "/home/stat/r_schalter/POWER"
-    command_topic: "/home/cmnd/r_schalter/POWER"
-    availability_topic: "/home/tele/r_schalter/LWT"
-    payload_available: "online"
-    payload_not_available: "offline"
+    state_topic: "stat/r_schalter/POWER"
+    command_topic: "cmnd/r_schalter/POWER"
+    availability_topic: "tele/r_schalter/LWT"
+    qos: 1
+    optimistic: false
+    retain: true
+
+  - platform: mqtt
+    name: Pow Kaffee
+    state_topic: "tele/pkaffee/POWER"
+    command_topic: "cmnd/pkaffee/POWER"
+    availability_topic: "tele/pkaffee/LWT"
     qos: 1
     optimistic: false
     retain: true
@@ -84,6 +187,34 @@ media_player:
     name: Kueche Kodi
     host: amazon-cdea109b9.fritz.box
 
+  - platform: universal
+    name: Test Universal
+    children:
+      - media_player.pi_media_mpd
+      - media_player.snapcast_client_6aec95f148e44614adcf25c2fafed2c0_2
+    commands:
+      turn_on:
+        service: switch.turn_on
+        data:
+          entity_id: switch.living_room_tv
+      turn_off:
+        service: switch.turn_off
+        data:
+          entity_id: switch.living_room_tv
+      volume_up:
+        service: switch.turn_on
+        data:
+          entity_id: switch.living_room_volume_up
+      volume_down:
+        service: switch.turn_on
+        data:
+          entity_id: switch.living_room_volume_down
+      volume_mute:
+        service: switch.turn_on
+        data:
+          entity_id: switch.living_room_mute
+
+          
 input_number:
 
   in_mpd_kueche:
@@ -93,6 +224,7 @@ input_number:
     max: 1
     step: 0.05
 
+
 automation:
 
   - alias: Radio An Werktags
@@ -100,9 +232,14 @@ automation:
       platform: time
       at: 06:00:00
     condition:
-      condition: state
-      entity_id: binary_sensor.bs_workday
-      state: 'on'
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: binary_sensor.bs_workday
+          state: 'on'
+        - condition: state
+          entity_id: input_boolean.boolean_urlaub
+          state: 'off'
     action:
       - service: switch.turn_on
         entity_id: switch.sw_mpd_hrs
@@ -140,15 +277,13 @@ automation:
     trigger:
       platform: state
       entity_id: binary_sensor.radio_schalter_kueche_taste
+      to: 'on'
+      for:
+        seconds: 1
     condition:
-      condition: and
-      conditions:
-      - condition: state
-        entity_id: binary_sensor.radio_schalter_kueche_taste
-        state: 'on'
-      - condition: state
-        entity_id: binary_sensor.bs_play_mpd
-        state: 'off'
+      condition: state
+      entity_id: binary_sensor.bs_play_mpd
+      state: 'off'
     action:
       - service: switch.turn_on
         entity_id: switch.sw_mpd_hrs
@@ -167,15 +302,13 @@ automation:
     trigger:
       platform: state
       entity_id: binary_sensor.radio_schalter_kueche_taste
+      to: 'on'
+      for:
+        seconds: 1
     condition:
-      condition: and
-      conditions:
-      - condition: state
-        entity_id: binary_sensor.radio_schalter_kueche_taste
-        state: 'on'
-      - condition: state
-        entity_id: binary_sensor.bs_play_mpd
-        state: 'on'
+        - condition: state
+          entity_id: binary_sensor.bs_play_mpd
+          state: 'on'
     action:
       - service: media_player.turn_off
         # Note the use of 'data_template:' below rather than the normal 'data:' if you weren't using an input variable
@@ -205,35 +338,142 @@ automation:
       - service: media_player.volume_set
         # Note the use of 'data_template:' below rather than the normal 'data:' if you weren't using an input variable
         data_template:
-          entity_id: media_player.snapcast_client_6aec95f148e44614adcf25c2fafed2c0
+          entity_id: media_player.snapcast_client_6aec95f148e44614adcf25c2fafed2c0_2
           volume_level: '{{ trigger.to_state.state }}'
       - service: notify.wolfhome
         data:
           title: '*Radio*'
           message: 'Küchenlautstärke {{ trigger.to_state.state }}' 
 
+  - alias: Kaffee an Werktags
+    trigger:
+      platform: time
+      at: '5:30'
+    condition:
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: binary_sensor.bs_workday
+          state: 'on'
+        - condition: state
+          entity_id: input_boolean.boolean_urlaub
+          state: 'off'
+    action:
+      - service: switch.turn_on
+        entity_id: switch.pow_kaffee
+
+  - alias: Kaffee an
+    trigger:
+      platform: time
+      at: '6:45'
+    action:
+      - service: switch.turn_on
+        entity_id: switch.pow_kaffee
+        
+
+  - alias: Kaffee aus
+    trigger:
+      platform: time
+      at: '23:30'
+    action:
+      - service: switch.turn_off
+        entity_id: switch.pow_kaffee
+
+  - alias: OpenDoorKuecheON
+    initial_state: 'on'
+    trigger:
+      - platform: state
+        entity_id: sensor.rf_bridge_result
+        to: 'C716EE'
+    action:
+      - service: mqtt.publish
+        data:
+          topic: "home/OpenDoorKueche"
+          payload: 'on'
+          qos: 0
+          retain: true
+          
+  - alias: OpenDoorKuecheOff
+    initial_state: 'on'
+    trigger:
+      - platform: state
+        entity_id: sensor.rf_bridge_result
+        to: 'C716E7'
+    action:
+      - service: mqtt.publish
+        data:
+          topic: "home/OpenDoorKueche"
+          payload: 'off'
+          qos: 0
+          retain: true
+    
+  - alias: OpenFensterKuecheON
+    initial_state: 'on'
+    trigger:
+      - platform: state
+        entity_id: sensor.rf_bridge_result
+        to: '0F83EE'
+    action:
+      - service: mqtt.publish
+        data:
+          topic: "home/OpenFensterKueche"
+          payload: 'on'
+          qos: 0
+          retain: true
+  - alias: OpenFensterKuecheOff
+    initial_state: 'on'
+    trigger:
+      - platform: state
+        entity_id: sensor.rf_bridge_result
+        to: '0F83E7'
+    action:
+      - service: mqtt.publish
+        data:
+          topic: "home/OpenFensterKueche"
+          payload: 'off'
+          qos: 0
+          retain: true
+         
 group:
   g_kueche_tracker:
     view: no
-    name: Tracker Kueche
+    name: Tracker Küche
     entities:
-    - binary_sensor.cook_key_tracker
-    - binary_sensor.piradio_tracker
-    - device_tracker.tablet
-
+    - device_tracker.thermomix30c10e
+    - device_tracker.amazoncdea109b9
+    - device_tracker.piradio
+    - device_tracker.rschalter
+    - device_tracker.galaxytaba2016
+    - device_tracker.wlankueche
+    
+  g_kaffee_pow:
+    name: Kaffee POW 
+    view: no
+    entities:
+    - weblink.pow_kaffee_web
+    - switch.pow_kaffee
+    - sensor.pow_kaffee_wlan
+    - sensor.pow_kaffee_v
+    - sensor.pow_kaffee_lz
+    - sensor.pow_kaffee_voltage
+    - sensor.pow_kaffee_current
+    - sensor.pow_kaffee_factor
+    - sensor.pow_kaffee_power
+    - sensor.pow_kaffee_today
+    - sensor.pow_kaffee_yesterday
+    - sensor.pow_kaffee_total
 
 
   g_pi_k_schalter:
     name: Gruppe Radio Schalter Küche 
     view: no
     entities:
-    - weblink.radio_schalter_kuche_web
+    - weblink.radio_schalter_kueche_web
     - switch.radio_schalter_kueche
     - sensor.radio_schalter_kueche_wlan
     - sensor.radio_schalter_kueche_v
     - sensor.radio_schalter_kueche_lz
     - binary_sensor.radio_schalter_kueche_taste
-
 
 
   g_kueche_sensor:
@@ -242,6 +482,9 @@ group:
     entities:
     - sensor.kueche_temperatur
     - sensor.kueche_feuchte
+    - binary_sensor.tuer_contact_kueche
+    - binary_sensor.fenster_contact_kueche
+
 
   g_kueche:
     view: yes
@@ -250,8 +493,10 @@ group:
     entities:
     - group.g_kueche_tracker
     - group.g_kueche_sensor
+    - group.g_kaffee_pow
     - history_graph.kuche_graph
     - group.g_radio
+    - group.g_pi_k_schalter
     - media_player.kueche_kodi
     - media_player.snapcast_client_6aec95f148e44614adcf25c2fafed2c0
 

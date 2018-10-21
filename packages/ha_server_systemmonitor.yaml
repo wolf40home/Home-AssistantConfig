@@ -46,8 +46,8 @@ group:
   linux_server_card:
    name: Ha Server
    entities:
-     - sensor.speedtest_download
-     - sensor.speedtest_upload
+#     - sensor.speedtest_download
+#     - sensor.speedtest_upload
      - sensor.speedtest_ping
      - sensor.processor_use
      - sensor.load_15m
@@ -111,11 +111,6 @@ sensor:
       - type: since_last_boot
 
 
-#  - platform: command_line
-#    name: Ha Cpu Temperature
-#    command: cat /sys/class/thermal/thermal_zone0/temp
-#    unit_of_measurement: '°C'
-#    value_template: '{{ (value|int / 1000 )|round(1) }}'
 
   - platform: speedtest
     hour:
@@ -126,8 +121,8 @@ sensor:
       - 22
     monitored_conditions:
       - ping
-      - download
-      - upload
+#      - download
+#      - upload
 
 input_number:
   ram_alert_value:
@@ -153,8 +148,8 @@ history_graph:
   gr2:
     name: Speedtest
     entities:
-      - sensor.speedtest_download
-      - sensor.speedtest_upload
+#      - sensor.speedtest_download
+#      - sensor.speedtest_upload
       - sensor.speedtest_ping
     hours_to_show: 48
     refresh: 120

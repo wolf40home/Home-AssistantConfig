@@ -1,0 +1,117 @@
+alarm_control_panel:
+  - platform: manual_mqtt
+    state_topic: home/alarm
+    command_topic: home/alarm/set
+    pending_time: 30
+    delay_time: 20
+    trigger_time: 4
+    disarmed:
+      trigger_time: 0
+    armed_home:
+      pending_time: 0
+      delay_time: 0
+
+
+automation:
+    
+  - alias: Alarm Aus
+    initial_state: 'on'
+    trigger:
+      - platform: state
+        entity_id: sensor.rf_bridge_result
+        to: '4C5F22'
+    action:
+      - service: mqtt.publish
+        data:
+          topic: home/alarm/set
+          payload: 'DISARM'
+          qos: 0
+          retain: true
+  - alias: Alarm An
+    initial_state: 'on'
+    trigger:
+      - platform: state
+        entity_id: sensor.rf_bridge_result
+        to: '4C5F24'
+    action:
+      - service: mqtt.publish
+        data:
+          topic: home/alarm/set
+          payload: 'ARM_AWAY'
+          qos: 0
+          retain: true
+  - alias: Alarm An Home 1
+    initial_state: 'on'
+    trigger:
+      - platform: state
+        entity_id: sensor.rf_bridge_result
+        to: '130281'
+    action:
+      - service: mqtt.publish
+        data:
+          topic: home/alarm/set
+          payload: 'ARM_HOME'
+          qos: 0
+          retain: true
+  - alias: Alarm An Home 2
+    initial_state: 'on'
+    trigger:
+      - platform: state
+        entity_id: sensor.rf_bridge_result
+        to: '972481'
+    action:
+      - service: mqtt.publish
+        data:
+          topic: home/alarm/set
+          payload: 'ARM_HOME'
+          qos: 0
+          retain: true
+     
+group:
+  g_alarm_sensor:
+    name: Alarm Sensor
+    view: no
+    entities:
+    - binary_sensor.fenster_contact_keller_l
+    - binary_sensor.fenster_contact_keller_r
+    - binary_sensor.tuer_contact_kueche
+    - binary_sensor.fenster_contact_kueche
+    - binary_sensor.fenster_contact_wohnzimmer
+    - binary_sensor.fenster_contact_wohnzimmer_r
+    - binary_sensor.fenster_contact_wohnzimmer_l
+    - binary_sensor.tuer_contact_kueche
+    - binary_sensor.fenster_contact_kueche
+    - binary_sensor.fenster_contact_treppe
+    - binary_sensor.fenster_contact_wc
+    - binary_sensor.fenster_contact_vorrat
+    - binary_sensor.tuer_contact_haus
+    - binary_sensor.tuer_contact_wohnzimmer
+
+  g_alarm_batt:
+    name: Alarm Sensor
+    view: no
+    entities:
+    - binary_sensor.fenster_contact_keller_l_alarm
+    - binary_sensor.fenster_contact_keller_r_alarm
+    - binary_sensor.tuer_contact_kueche_alarm
+    - binary_sensor.fenster_contact_kueche_alarm
+    - binary_sensor.fenster_contact_wohnzimmer_alarm
+    - binary_sensor.fenster_contact_wohnzimmer_r_alarm
+    - binary_sensor.fenster_contact_wohnzimmer_l_alarm
+    - binary_sensor.tuer_contact_kueche_alarm
+    - binary_sensor.fenster_contact_kueche_alarm
+    - binary_sensor.fenster_contact_treppe_alarm
+    - binary_sensor.fenster_contact_wc_alarm
+    - binary_sensor.fenster_contact_vorrat_alarm
+    - binary_sensor.tuer_contact_haus_alarm
+    - binary_sensor.tuer_contact_wohnzimmer_alarm
+
+  g_alarm:
+    name: Alarme
+    icon: mdi:alert-circle-outline
+    view: yes
+    entities:
+    - alarm_control_panel.ha_alarm
+    - group.g_rf_bridge
+    - group.g_alarm_sensor
+    - group.g_alarm_batt

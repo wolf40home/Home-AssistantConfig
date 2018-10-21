@@ -1,0 +1,302 @@
+#homeassistant:
+#  customize:
+
+switch:
+
+  - platform: mqtt
+    name: Pow Garage
+    state_topic: "tele/pgarage/POWER"
+    availability_topic: "tele/pgarage/LWT"
+    command_topic: "cmnd/pgarage/POWER"
+    qos: 1
+    optimistic: false
+    retain: true
+
+binary_sensor:
+
+  - platform: mqtt
+    name: Licht Garage Taste
+    state_topic: "cmnd/lgarageex/POWER1"
+
+sensor:
+
+# POW
+  - platform: mqtt
+    state_topic: "tele/pgarage/STATE"
+    name: Pow Garage Wlan
+    unit_of_measurement: "%"
+    value_template:  "{{value_json['Wifi'].RSSI}}"
+  - platform: mqtt
+    state_topic: "tele/pgarage/STATE"
+    name: Pow Garage SSId
+    value_template:  "{{value_json['Wifi'].SSId}}"
+
+  - platform: mqtt
+    name: Pow Garage V
+    state_topic: "tele/pgarage/STATE"
+    unit_of_measurement: "V"
+    value_template:  "{{value_json.Vcc}}"
+
+  - platform: mqtt
+    name: Pow Garage LZ
+    state_topic: "tele/pgarage/STATE"
+    value_template:  "{{value_json.Uptime}}"
+
+  - platform: mqtt
+    name: Pow Garage Version
+    state_topic: "tele/pgarage/STATUS2"
+    value_template:  "{{value_json['StatusFWR'].Version}}"
+    
+  - platform: mqtt
+    name: "Pow Garage Today"
+    state_topic: "tele/pgarage/STATUS10"
+    value_template: '{{ value_json.StatusSNS.ENERGY.Today }}'
+    unit_of_measurement: "kWh"
+  - platform: mqtt
+    name: "Pow Garage Power"
+    state_topic: "tele/pgarage/STATUS10"
+    value_template: '{{ value_json.StatusSNS.ENERGY.Power }}'
+    unit_of_measurement: "W"
+  - platform: mqtt
+    name: "Pow Garage Voltage"
+    state_topic: "tele/pgarage/STATUS10"
+    value_template: '{{ value_json.StatusSNS.ENERGY.Voltage }}'
+    unit_of_measurement: "V"
+  - platform: mqtt
+    name: "Pow Garage Current"
+    state_topic: "tele/pgarage/STATUS10"
+    value_template: '{{ value_json.StatusSNS.ENERGY.Current }}'
+    unit_of_measurement: "A"
+    
+  - platform: mqtt
+    name: "Pow Garage Yesterday"
+    state_topic: "tele/pgarage/STATUS10"
+    value_template: '{{ value_json.StatusSNS.ENERGY.Yesterday }}'
+    unit_of_measurement: "kWh"
+  - platform: mqtt
+    name: "Pow Garage Total"
+    state_topic: "tele/pgarage/STATUS10"
+    value_template: '{{ value_json.StatusSNS.ENERGY.Total }}'
+    unit_of_measurement: "kWh"
+  - platform: mqtt
+    name: "Pow Garage Factor"
+    state_topic: "tele/pgarage/STATUS10"
+    value_template: '{{ value_json.StatusSNS.ENERGY.Factor }}'
+
+  - platform: mqtt
+    state_topic: "tele/lgarage/STATE"
+    name: Licht Garage Wlan
+    unit_of_measurement: "%"
+    value_template:  "{{value_json['Wifi'].RSSI}}"
+  - platform: mqtt
+    state_topic: "tele/lgarage/STATE"
+    name: Licht Garage SSId
+    value_template:  "{{value_json['Wifi'].SSId}}"
+
+  - platform: mqtt
+    name: Licht Garage V
+    state_topic: "tele/lgarage/STATE"
+    unit_of_measurement: "V"
+    value_template:  "{{value_json.Vcc}}"
+
+  - platform: mqtt
+    name: Licht Garage LZ
+    state_topic: "tele/lgarage/STATE"
+    value_template:  "{{value_json.Uptime}}"
+
+  - platform: mqtt
+    name: Licht Garage Version
+    state_topic: "tele/lgarage/STATUS2"
+    value_template:  "{{value_json['StatusFWR'].Version}}"
+    
+  - platform: mqtt
+    name: Garage Temperatur
+    state_topic: "tele/lgarage/STATUS10"
+    unit_of_measurement: "°C"
+    value_template:  "{{(value_json.StatusSNS.HTU21.Temperature| float - 0.1)| round(1)}}"
+
+  - platform: mqtt
+    name: Garage Feuchte
+    state_topic: "tele/lgarage/STATUS10"
+    unit_of_measurement: "%"
+    value_template:  "{{(value_json.StatusSNS.HTU21.Humidity| float + 2.9)| round(1)}}"
+
+history_graph:
+
+  gr23:
+    name: Garage Graph
+    entities:
+      - sensor.pow_garage_voltage
+      - sensor.pow_garage_current
+      - sensor.garage_temperatur
+      - sensor.garage_feuchte
+    hours_to_show: 240
+    refresh: 60
+
+
+light:
+  - platform: mqtt
+    name: Licht Garage
+    state_topic: "tele/lgarage/POWER"
+    command_topic: "cmnd/lgarage/POWER"
+    availability_topic: "tele/lgarage/LWT"
+    qos: 1
+    optimistic: false
+    retain: false
+
+group:    
+
+  g_garage_tracker:    
+    name: Garage Tracker
+    entities:
+    - device_tracker.pgarage
+    - device_tracker.lgarage
+
+  g_garage_pow:
+    name: Garage POW 
+    view: no
+    entities:
+    - weblink.pow_garage_web
+    - switch.pow_garage
+    - sensor.pow_garage_wlan
+    - sensor.pow_garage_v
+    - sensor.pow_garage_lz
+    - sensor.pow_garage_voltage
+    - sensor.pow_garage_current
+    - sensor.pow_garage_power
+    - sensor.pow_garage_factor
+    - sensor.pow_garage_today
+    - sensor.pow_garage_yesterday
+    - sensor.pow_garage_total
+
+  g_licht_garage:
+    name: Licht Garage
+    entities:
+    - weblink.licht_garage_web
+    - light.licht_garage
+    - input_number.in_licht_garage
+    - sensor.licht_garage_wlan
+    - sensor.licht_garage_v
+    - sensor.licht_garage_lz
+    - binary_sensor.licht_garage_taste
+
+  g_garage:
+    view: yes
+    icon: mdi:garage
+    name: Garage
+    entities:
+    - group.g_garage_tracker
+    - group.g_garage_pow
+    - group.g_licht_garage
+    - group.g_garage_sensor
+    - history_graph.garage_graph
+
+  g_garage_sensor:
+    name: Garage Sensor
+    view: no
+    entities:
+      - sensor.pow_garage_voltage
+      - sensor.pow_garage_current
+      - sensor.garage_temperatur
+      - sensor.garage_feuchte
+input_number:
+
+  in_licht_garage:
+    name: Licht Garage Zeit
+    mode: slider
+    min: 10
+    max: 40
+    step: 1
+
+
+automation:
+
+  - alias: Wasser An
+    trigger:
+      platform: state
+      entity_id: switch.pow_garage
+      from: 'off'
+      to: 'on'
+    action:
+      - service: notify.wolfhome
+        data:
+         title: '*Brunnen*'
+         message: ' an ' 
+
+  - alias: Wasser An FB
+    trigger:
+      platform: state
+      entity_id: binary_sensor.gt9000_197432_2
+      from: 'off'
+      to: 'on'
+    action:
+      - service: switch.turn_on
+        entity_id: switch.pow_garage
+
+  - alias: Wasser Aus
+    trigger:
+      platform: state
+      entity_id: switch.pow_garage
+      from: 'on'
+      to: 'off'
+    action:
+      - service: notify.wolfhome
+        data:
+         title: '*Brunnen*'
+         message: ' aus ' 
+
+  - alias: Wasser Aus FB
+    trigger:
+      platform: state
+      entity_id: binary_sensor.gt9000_197432_2
+      from: 'on'
+      to: 'off'
+    action:
+      - service: switch.turn_off
+        entity_id: switch.pow_garage
+
+  - alias: Licht Garage An
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.licht_keller_flur_taste
+        to: "on"
+    action:
+      - service: light.turn_on
+        entity_id: light.licht_garage
+
+  - alias: Licht Garage Timer Start
+    trigger:
+      platform: state
+      entity_id: binary_sensor.licht_keller_flur_taste
+      from: 'on'
+      to: 'off'
+    action:
+      service: script.turn_on
+      entity_id: script.licht_garage_motion
+
+  - alias: Licht Garage Timer Cancel
+    trigger:
+      platform: state
+      entity_id: binary_sensor.licht_keller_flur_taste
+      from: 'off'
+      to: 'on'
+    action:
+      service: script.turn_off
+      entity_id: script.licht_garage_motion  
+
+script:
+  licht_garage_motion:
+    sequence:
+      - delay: >-
+          {% set duration = states.input_number.in_licht_garage.state | int %}
+          {% if duration > 0 %}
+            {% set duration = duration - 1 %}
+          {% endif %}
+          {% set seconds = duration % 60 %}
+          {% set minutes = (duration / 60)|int % 60 %}
+          {% set hours = (duration / 3600)|int %}
+          {{ [hours, minutes, seconds]|join(':') }}
+      - service: light.turn_off
+        data_template:
+          entity_id: light.licht_garage
+         

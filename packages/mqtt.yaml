@@ -1,0 +1,27 @@
+sensor:
+  - platform: mqtt
+    state_topic: "$SYS/broker/subscriptions/count"
+    name: Broker subscriptions count
+  - platform: mqtt
+    state_topic: "$SYS/broker/version"
+    name: Broker Version
+  - platform: mqtt
+    state_topic: "$SYS/broker/clients/maximum"
+    name: Broker Clients maximum
+  - platform: mqtt
+    state_topic: "$SYS/broker/clients/total"
+    name: Broker Clients total
+  - platform: mqtt
+    state_topic: "$SYS/broker/clients/expired"
+    name: Broker Clients expired
+
+group:
+  g_mqtt:
+    view: false
+    name: Mqtt
+    entities:
+    - sensor.broker_subscriptions_count
+    - sensor.broker_version
+    - sensor.broker_clients_maximum
+    - sensor.broker_clients_total
+    - sensor.broker_clients_expired

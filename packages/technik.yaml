@@ -4,55 +4,143 @@ homeassistant:
       hidden: false
     group.all_scripts:
       hidden: false
-      
-history_graph:
-  grff:
-    name: Internet
-    entities:
-      - sensor.fritz_transmission_down_speed
-      - sensor.fritz_transmission_up_speed
-    hours_to_show: 48
-    refresh: 120
 
+binary_sensor:
 
+  - platform: mqtt
+    name: Node Red LWT
+    state_topic: "tele/nodered/LWT"
+    value_template: "{{ value }}"
+    payload_on: "online"
+    payload_off: "offline"
+    device_class: connectivity 
+    
+automation:      
+  - alias: "Power state on HA start-up"
+    trigger:
+      platform: homeassistant
+      event: start
+    action:
+      - service: mqtt.publish
+        data:
+          topic: "cmnd/sonoffs/Timezone"
+          payload: "2"
+      - service: mqtt.publish
+        data:
+          topic: "cmnd/sonoffs/power1"
+          payload: ""
+      - service: mqtt.publish
+        data:
+          topic: "cmnd/sonoffs/power2"
+          payload: ""
+      - service: mqtt.publish
+        data:
+          topic: "cmnd/sonoffs/Power3"
+          payload: "" 
+      - service: mqtt.publish
+        data:
+          topic: "cmnd/sonoffs/power4"
+          payload: ""
+      - service: mqtt.publish
+        data:
+          topic: "cmnd/sonoffs/state"
+          payload: "" 
+      - service: mqtt.publish
+        data:
+          topic: "cmnd/sonoffs/Status"
+          payload: "2" 
+      - service: mqtt.publish
+        data:
+          topic: "cmnd/sonoffs/status"
+          payload: "10"
+      - service: mqtt.publish
+        data:
+          topic: "cmnd/sonoffs/SensorRetain"
+          payload: "0" 
+
+      - service: mqtt.publish
+        data:
+          topic: "cmnd/sonoffs/TelePeriod"
+          payload: "600" 
+      - service: notify.wolfgang
+        data:
+         title: '*HA Start*'
+         message: ' wurde gestartet' 
+
+  - alias: "Trigger Wlan"
+    initial_state: False
+    trigger:
+      platform: homeassistant
+      event: start
+    action:
+         
+      - service: mqtt.publish
+        data:
+          topic: "cmnd/sonoffs/WifiConfig"
+          payload: "4" 
+      - service: mqtt.publish
+        data:
+          topic: "cmnd/sonoffs/SSId1"
+          payload: "Steiner-Fritz" 
+      - service: mqtt.publish
+        data:
+          topic: "cmnd/sonoffs/SSId2"
+          payload: "Steiner-Asus" 
+
+  - alias: "Sonoff Tele"
+    trigger:
+      platform: time
+    # You can also match on interval. This will match every 5 minutes
+      minutes: '/3'
+      seconds: 00
+    action:
+      - service: mqtt.publish
+        data:
+          topic: "cmnd/sonoffs/status"
+          payload: "10"
+      - service: mqtt.publish
+        data:
+          topic: "cmnd/sonoffs/state"
+          payload: ""
 group:
-  g_fritz:
-    name: Fritz_Box
-    icon: mdi:access-point-network
-    entities:
-    - weblink.fritz_box
-    - sensor.fritz_netmonitor
-    - sensor.s_fritz_callmonitor
-    - binary_sensor.bs_fritz_repeater
-    - binary_sensor.bs_fritz_box_7390
-    - history_graph.speedtest
-    - history_graph.internet
 
 
   g_geraete:
     name: alle
     control: hidden
     entities:
-    - binary_sensor.bs_fritz_repeater
-    - binary_sensor.bs_fritz_box_7590
-    - binary_sensor.bs_fritz_box_7390
-    - binary_sensor.bs_wolfgang_da
-    - binary_sensor.bs_wolfgang_da2
-    - binary_sensor.bs_pi_media
+    - device_tracker.fritzbox
+    - device_tracker.fritzrepeater
+    - device_tracker.wlannetz
+    - device_tracker.wlankueche
+    - device_tracker.wlankeller
+    - device_tracker.rtac88ua0f8
+    - device_tracker.swbuero
+    - device_tracker.swkeller
+    - device_tracker.swspeicher
+    - device_tracker.speicherbasteln
+    - device_tracker.nas3
+    - device_tracker.wolfgangda2
+    - device_tracker.kodipimedia
+    - device_tracker.vusolo4k
+    - device_tracker.amazoncdea109b9
+    - device_tracker.galaxytaba2016
+    - device_tracker.ipad
     - device_tracker.win10
+    - device_tracker.harmonyhub
     - device_tracker.ipadvonbarbara
     - device_tracker.barbarasipad
-    - binary_sensor.bs_radio_kueche
-    - binary_sensor.bs_cook_key
-    - device_tracker.tablet
-    - binary_sensor.bs_drucker
-    - binary_sensor.bs_wolfgang_pc
+    - device_tracker.piradio
+    - device_tracker.thermomix30c10e
+    - device_tracker.drucker
+    - device_tracker.wolfgangpc
+    - device_tracker.rf433
     - device_tracker.w7der03852l
-    - device_tracker.wtdelvse044110leurgadschneiderelectriccom
-    - binary_sensor.bs_dm500plus
-    - device_tracker.barbarahandy
-    - device_tracker.samsungsmg920fwolfgangsteiner
-
+    - device_tracker.dm500plus
+    - device_tracker.samsunggalaxys7
+    - device_tracker.wolfgangss6
+    - device_tracker.dualschlaf
+    - device_tracker.tsensorschlaf
 
 
   g_sonoff:
@@ -66,10 +154,15 @@ group:
     - sensor.licht_treppe_speicher_lz
     - sensor.licht_treppe_speicher_wlan
     - cover.rollladen_buero
-    - sensor.rolladen_buero_lz
-    - sensor.rolladen_buero_wlan
-    - sensor.rolladen_schlafzimmer_lz
-    - sensor.rolladen_schlafzimmer_wlan
+    - sensor.rollladen_buero_lz
+    - sensor.rollladen_buero_wlan
+    - cover.rollladen_schlafzimmer
+    - sensor.rollladen_schlafzimmer_lz
+    - sensor.rollladen_schlafzimmer_wlan
+    - switch.pow_buero
+    - sensor.pow_buero_wlan
+    - sensor.pow_buero_v
+    - sensor.pow_buero_lz
     - switch.lade_schalter_vorrat
     - sensor.lade_schalter_vorrat_wlan
     - sensor.lade_schalter_vorrat_lz
@@ -105,4 +198,5 @@ group:
     - group.g_fritz_sensor
     - group.all_automations
     - group.g_sonoff
-
+    - group.g_mqtt
+    - shell_command.lovelace_gen

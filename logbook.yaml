@@ -1,6 +1,13 @@
 #-------------------------------------------
 #  Logbook Component
 #-------------------------------------------
+include:
+  domains:
+    - sensor
+    - binary_sensor
+    - switch
+    - media_player
+    - light
 exclude:
   entities:
     - sensor.s_time_date
@@ -12,6 +19,28 @@ exclude:
     - sensor.disk_used_
     - sensor.cpu_used
     - sensor.average_load_1m
-  domains:
-  - weblink
-  - group
+    - binary_sensor.zzztuer_contact_kueche
+    - sensor.rf_bridge_lz
+    - sensor.speicher_schalter_basteln_lz
+    - sensor.licht_treppe_speicher_lz
+    - sensor.pow_buero_lz
+    - sensor.rollladen_buero_lz
+    - sensor.rollladen_schlafzimmer_lz
+    - sensor.schalter_aquarium_lz
+    - sensor.radio_schalter_kueche_lz
+    - sensor.pow_kaffee_lz
+    - sensor.lade_schalter_vorrat_lz
+    - sensor.licht_keller_flur_lz
+    - sensor.radio_schalter_keller_lz
+    - sensor.pow_garage_lz
+    - sensor.licht_garage_lz
+    - sensor.licht_led_lz
+    - automation.sonoff_tele
+    - binary_sensor.zzzfenster_contact_keller_l
+    - binary_sensor.zzzfenster_contact_keller_r
+    - binary_sensor.zzzfenster_contact_kueche   
+    - binary_sensor.zzzfenster_contact_treppe   
+    - binary_sensor.zzzfenster_contact_wohnzimmer   
+    - binary_sensor.zzztuer_contact_kueche   
+    - binary_sensor.zzzfenster_contact_wc   
+    - binary_sensor.zzzfenster_contact_vorrat

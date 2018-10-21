@@ -1,22 +1,28 @@
-  exclude:
-    domains:
-      - automation
-      - weblink
-      - updater
+include:
+  domains:
+    - sensor
+    - switch
+    - ligth
+
+exclude:
     entities:
       - sensor.last_boot
+      - sensor.since_last_boot
       - sensor.s_time_date
       - sun.sun
-      - sensor.s_r_schalter_Wlan
-      - sensor.s_r_schalter_v
-      - sensor.s_r_schalter_up
-      - sensor.s_r_schalter1_Wlan
-      - sensor.s_r_schalter1_v
-      - sensor.s_r_schalter1_up
-      - sensor.s_aquarium_Wlan
-      - sensor.s_aquarium_v
-      - sensor.s_aquarium_up
-
-#  include:
-#    entities:
-#      - sensor.schneider_electric
+      - sensor.rollladen_Buero_v
+      - sensor.rollladen_buero_lz
+      - sensor.pow_buero_v
+      - sensor.pow_buero_lz
+      - sensor.pow_garage_v
+      - sensor.pow_garage_lz
+      - sensor.licht_garage_v
+      - sensor.licht_garage_lz
+      - sensor.licht_keller_flur_v
+      - sensor.licht_keller_flur_lz
+      - sensor.radio_schalter_keller_v
+      - sensor.radio_schalter_keller_lz
+      - sensor.pow_kaffee_v
+      - sensor.pow_kaffee_lz
+      - sensor.radio_schalter_kueche_v
+      - sensor.radio_schalter_kueche_lz

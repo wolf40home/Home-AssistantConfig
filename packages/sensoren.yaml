@@ -4,19 +4,32 @@ history_graph:
     entities:
      - sensor.speicher_temperatur
      - sensor.treppe_speicher_temperatur
+     - sensor.schlafzimmer_temperatur
      - sensor.wohnzimmer_temperatur
      - sensor.kueche_temperatur
      - sensor.vorrat_temperatur
+     - sensor.garage_temperatur
+     - sensor.aussen_temperatur
      - sensor.keller_temperatur
      - sensor.licht_keller_flur_temperatur
      - sensor.speicher_feuchte
      - sensor.treppe_speicher_feuchte
+     - sensor.schlafzimmer_feuchte
      - sensor.wohnzimmer_feuchte
      - sensor.kueche_feuchte
      - sensor.vorrat_feuchte
+     - sensor.garage_feuchte
+     - sensor.aussen_feuchte
      - sensor.keller_feuchte
      - sensor.licht_keller_flur_feuchte
      - sensor.druck
+    hours_to_show: 240
+    refresh: 60
+  gr51:
+    name: Luftdaten
+    entities:
+     - sensor.luftdaten_pm10
+     - sensor.luftdaten_pm25
     hours_to_show: 240
     refresh: 60
 
@@ -47,6 +60,18 @@ sensor:
     entity_ids:
     - sensor.speicher_temperatur
     - sensor.keller_temperatur
+  - platform: min_max
+    type: mean
+    name: Feuchte Nebenräume min/max
+    entity_ids:
+    - sensor.speicher_feuchte
+    - sensor.keller_feuchte
+  - platform: luftdaten
+    sensorid: 5774
+    show_on_map: true
+    monitored_conditions:
+      - P1
+      - P2
 
 group:
   g_minmaxsensoren:
@@ -66,7 +91,18 @@ group:
     entities:
     - group.g_keller_sensor
     - group.g_unten_sensor
+    - group.g_aussen_sensor
     - group.g_oben_sensor
     - group.g_speicher_sensor
     - group.g_minmaxsensoren
+    - group.g_luft
+    - group.g_garage_sensor
     - history_graph.sensoren_alle
+  g_luft:
+    name: Luftdaten Nievenheim
+    view: no
+    icon: mdi:chart-line
+    entities:
+    - sensor.luftdaten_pm10
+    - sensor.luftdaten_pm25
+    - history_graph.luftdaten

@@ -7,22 +7,26 @@ homeassistant:
       order: 1
     group.g_keller:
       order: 2
-    group.g_unten:
+    group.g_aussen:
       order: 3
-    group.g_kueche:
+    group.g_unten:
       order: 4
-    group.g_wohnzimmer:
+    group.g_garage:
       order: 5
-    group.g_oben:
+    group.g_kueche:
       order: 6
-    group.g_buero:
+    group.g_wohnzimmer:
       order: 7
-    group.g_schlafzimmer:
+    group.g_oben:
       order: 8
-    group.g_speicher:
+    group.g_buero:
       order: 9
-    group.g_media:
+    group.g_schlafzimmer:
       order: 10
+    group.g_speicher:
+      order: 11
+    group.g_media:
+      order: 12
     group.g_technik:
       order: 99
     group.g_googlekalender:
@@ -31,7 +35,14 @@ homeassistant:
 #Datum
     sensor.s_time_date:
       friendly_name: Datum/Zeit
-    
+
+binary_sensor:
+  - platform: workday
+    name: bs_workday
+    country: DE
+    workdays: [ mon, tue, wed, thu, fri ]
+#    province: [NW]
+      
 sensor:
   - platform: moon
     name: Mond
@@ -43,17 +54,6 @@ sensor:
         unit_of_measurement: '°'
         value_template: "{{ '%+.1f'|format(states.sun.sun.attributes.elevation) }}"
 
-  - platform: alpha_vantage
-    api_key: !secret alpha_api
-    symbols:
-    - name: Schneider Electric
-      currency: EUR
-      symbol: SBGSF
-
-    foreign_exchange:
-      - from: EUR
-        to: USD
-        name: Euro
 
   - platform: yr
     name: s_weather
@@ -73,9 +73,9 @@ sensor:
       - highClouds
       - dewpointTemperature
 
-#- platform: dwd_weather_warnings
-#  name: Unwetter_Warnung
-#  region_name: Rhein-Kreis Neuss    
+  - platform: dwd_weather_warnings
+    name: Unwetter_Warnung
+    region_name: Rhein-Kreis Neuss    
 
 
   - platform: template
@@ -100,12 +100,6 @@ history_graph:
     hours_to_show: 240
     refresh: 60
 
-  gr4:
-    name: Schneider
-    entities:
-     - sensor.schneider_electric
-    hours_to_show: 2400
-    refresh: 0
 
 group:
   g_yr_wetter:
@@ -132,10 +126,10 @@ group:
     icon: mdi:home
     entities:
     - weather.openweathermap
-    - sensor.schneider_electric
     - sun.sun
     - sensor.mond
     - sensor.druck
+    - input_boolean.boolean_urlaub
 
   g_sonne:
     view: no
@@ -153,11 +147,12 @@ group:
     icon: mdi:home
     entities:
     - persistent_notification.update_available
+    - input_select.theme_select
     - group.g_haupt
     - group.g_radio
     - camera.borkum
+    - group.g_luft
     - history_graph.wetter
-    - history_graph.schneider
     - group.g_yr_wetter
     - group.g_geraete
-    - input_select.theme_select
+

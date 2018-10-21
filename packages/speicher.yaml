@@ -1,33 +1,42 @@
 
 sensor:
   - platform: mqtt
-    state_topic: "/home/tele/speicher_basteln/STATE"
+    state_topic: "tele/speicher_basteln/STATE"
     name: Speicher Schalter Basteln Wlan
     unit_of_measurement: "%"
     value_template:  "{{value_json['Wifi'].RSSI}}"
+  - platform: mqtt
+    state_topic: "tele/speicher_basteln/STATE"
+    name: Speicher Schalter Basteln SSId
+    value_template:  "{{value_json['Wifi'].SSId}}"
 
   - platform: mqtt
     name: Speicher Schalter Basteln V
-    state_topic: "/home/tele/speicher_basteln/STATE"
+    state_topic: "tele/speicher_basteln/STATE"
     unit_of_measurement: "V"
     value_template:  "{{value_json.Vcc}}"
 
   - platform: mqtt
     name: Speicher Schalter Basteln LZ
-    state_topic: "/home/tele/speicher_basteln/STATE"
+    state_topic: "tele/speicher_basteln/STATE"
     value_template:  "{{value_json.Uptime}}"
 
   - platform: mqtt
+    name: Speicher Schalter Basteln Version
+    state_topic: "tele/speicher_basteln/STATUS2"
+    value_template:  "{{value_json.StatusFWR.Version}}"
+    
+  - platform: mqtt
     name: Speicher Temperatur
-    state_topic: "/home/tele/speicher_basteln/SENSOR"
+    state_topic: "tele/speicher_basteln/STATUS10"
     unit_of_measurement: "°C"
-    value_template:  "{{value_json['HTU21'].Temperature}}"
+    value_template:  "{{(value_json.StatusSNS.HTU21.Temperature| float - 0.5)| round(1)}}"
 
   - platform: mqtt
     name: Speicher Feuchte
-    state_topic: "/home/tele/speicher_basteln/SENSOR"
+    state_topic: "tele/speicher_basteln/STATUS10"
     unit_of_measurement: "%"
-    value_template:  "{{value_json['HTU21'].Humidity}}"
+    value_template:  "{{(value_json.StatusSNS.HTU21.Humidity| float + 6.7)| round(1)}}"
 
 history_graph:
   gr40:
@@ -41,19 +50,17 @@ history_graph:
 switch:
   - platform: mqtt
     name: Speicher Schalter Basteln
-    state_topic: "/home/stat/speicher_basteln/POWER"
-    command_topic: "/home/cmnd/speicher_basteln/POWER"
-    availability_topic: "/home/tele/speicher_basteln/LWT"
-    payload_available: "online"
-    payload_not_available: "offline"
+    state_topic: "stat/speicher_basteln/POWER"
+    command_topic: "cmnd/speicher_basteln/POWER"
+    availability_topic: "tele/speicher_basteln/LWT"
     qos: 1
     optimistic: false
     retain: true
-#value_template: "{{ states('sensor.washing_machine_watts') | int < 3.4 }}"
 
 automation:
 
   - alias: Speicher Schalter Basteln Aus
+    initial_state: True
     trigger:
       - platform: state
         entity_id: switch.speicher_schalter_basteln
@@ -63,9 +70,18 @@ automation:
     action:
       - service: switch.turn_off
         entity_id: switch.speicher_schalter_basteln
+      - service: notify.wolfgang
+        data:
+         title: '*Schalter Basteln*'
+         message: ' Aus nach Zeit' 
 
 
 group:
+  g_speicher_tracker:    
+    name: Speicher Tracker 
+    view: no
+    entities:
+    - device_tracker.speicherbasteln
 
   g_speicher_schalter:
     name: Gruppe Speicher Schalter Basteln 
@@ -89,9 +105,8 @@ group:
     icon: mdi:cursor-pointer
     view: yes
     entities:
+    - group.g_speicher_tracker
     - group.g_speicher_sensor
     - group.g_speicher_schalter
-#    - camera.buro
-#    - group.g_bme280
     - history_graph.speicher_graph
 

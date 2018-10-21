@@ -1,73 +1,58 @@
-homeassistant:
-  customize:
-    binary_sensor.bs_drucker:
-      icon: mdi:printer
-      friendly_name: Drucker
-    binary_sensor.bs_fritz_box_7590:
-      friendly_name: Fritz Box 7590
-      icon: mdi:raspberrypi
-
-
 
 
 binary_sensor:
 
-#Fritzbox    
-
-  - platform: ping
-    name: Fritz Box 7590 Tracker
-    count: 2
-    host: fritz.box
-
-
-  - platform: ping
-    name: Drucker Tracker
-    count: 2
-    host: Drucker.fritz.box
-
-
   - platform: mqtt
     name: Licht Treppe Speicher Taste
-    state_topic: "/home/cmnd/LTreppeObenex/POWER1"
+    state_topic: "cmnd/LTreppeObenex/POWER1"
 
 
 sensor:
   - platform: mqtt
     name: Licht Treppe Speicher Wlan
-    state_topic: "/home/tele/LTreppeOben/STATE"
+    state_topic: "tele/LTreppeOben/STATE"
     unit_of_measurement: "%"
     value_template:  "{{value_json['Wifi'].RSSI}}"
+  - platform: mqtt
+    state_topic: "tele/LTreppeOben/STATE"
+    name: Licht Treppe Speicher SSId
+    value_template:  "{{value_json['Wifi'].SSId}}"
 
   - platform: mqtt
     name: Licht Treppe Speicher V
-    state_topic: "/home/tele/LTreppeOben/STATE"
+    state_topic: "tele/LTreppeOben/STATE"
     unit_of_measurement: "V"
     value_template:  "{{value_json.Vcc}}"
 
   - platform: mqtt
     name: Licht Treppe Speicher LZ
-    state_topic: "/home/tele/LTreppeOben/STATE"
+    state_topic: "tele/LTreppeOben/STATE"
     value_template:  "{{value_json.Uptime}}"
 
   - platform: mqtt
+    name: Licht Treppe Speicher Version
+    state_topic: "tele/LTreppeOben/STATUS2"
+    value_template:  "{{value_json['StatusFWR'].Version}}"
+
+  - platform: mqtt
     name: Treppe Speicher Temperatur
-    state_topic: "/home/tele/LTreppeOben/SENSOR"
+    state_topic: "tele/LTreppeOben/STATUS10"
     unit_of_measurement: "°C"
-    value_template:  "{{value_json['HTU21'].Temperature}}"
+    value_template:  "{{(value_json.StatusSNS.HTU21.Temperature| float - 0.1)| round(1)}}"
 
   - platform: mqtt
     name: Treppe Speicher Feuchte
-    state_topic: "/home/tele/LTreppeOben/SENSOR"
+    state_topic: "tele/LTreppeOben/STATUS10"
     unit_of_measurement: "%"
-    value_template:  "{{value_json['HTU21'].Humidity}}"
+    value_template:  "{{(value_json.StatusSNS.HTU21.Humidity| float + 2.9)| round(1)}}"
 
 # Fritzbox
   - platform: fritzbox_netmonitor
-    state_topic: "home/technik/fritz"
+    state_topic: "technik/fritz"
     Host: fritz.box
 
   - platform: fritzbox_callmonitor
-    state_topic: "home/technik/fritz"
+    state_topic: "technik/fritz"
     name: s_fritz_callmonitor
     host: 10.10.0.1
     username: !secret fritz_user2
@@ -83,11 +68,21 @@ sensor:
       fritz_transmission_down_speed:
         friendly_name: "Aktuelle Datenrate down"
         unit_of_measurement: 'kbit/s'
-        value_template: "{{ '{:.0f}'.format(states.sensor.fritz_netmonitor.attributes.transmission_rate_down|float/ 1024*8) }}"  
+        value_template: >-
+          {% if states.sensor.fritz_netmonitor.attributes.transmission_rate_down|float > 0  %}
+            {{ '{:.0f}'.format(states.sensor.fritz_netmonitor.attributes.transmission_rate_down|float/ 1024*8) }}
+          {% else %}
+            0
+          {% endif %}  
       fritz_transmission_up_speed:
         friendly_name: "Aktuelle Datenrate up"
         unit_of_measurement: 'kbit/s'
-        value_template: "{{ '{:.0f}'.format(states.sensor.fritz_netmonitor.attributes.transmission_rate_up|float/ 1024*8) }}" 
+        value_template: >- 
+          {% if states.sensor.fritz_netmonitor.attributes.transmission_rate_up|float > 0  %}
+            {{ '{:.0f}'.format(states.sensor.fritz_netmonitor.attributes.transmission_rate_up|float/ 1024*8) }}
+          {% else %}
+            0
+          {% endif %}  
       fritz_max_down_speed:
         friendly_name: "Leitungskapazität down"
         unit_of_measurement: 'kbit/s'
@@ -110,9 +105,9 @@ sensor:
 light:
   - platform: mqtt
     name: Licht Treppe Speicher
-    state_topic: "/home/stat/LTreppeOben/POWER"
-    command_topic: "/home/cmnd/LTreppeOben/POWER"
-    availability_topic: "/home/tele/LTreppeOben/LWT"
+    state_topic: "stat/LTreppeOben/POWER"
+    command_topic: "cmnd/LTreppeOben/POWER"
+    availability_topic: "tele/LTreppeOben/LWT"
     qos: 1
     optimistic: false
     retain: true
@@ -134,6 +129,13 @@ history_graph:
     - sensor.treppe_speicher_feuchte
     hours_to_show: 240
     refresh: 60
+  grff:
+    name: Internet
+    entities:
+      - sensor.fritz_transmission_down_speed
+      - sensor.fritz_transmission_up_speed
+    hours_to_show: 48
+    refresh: 120
     
 automation:
 
@@ -142,8 +144,8 @@ automation:
       - platform: state
         entity_id: binary_sensor.licht_treppe_speicher_taste
         to: "on"
-        for:
-          seconds: 4
+#        for:
+#          seconds: 4
     action:
       - service: light.turn_on
         entity_id: light.licht_treppe_speicher
@@ -190,9 +192,21 @@ group:
     name: Tracker Oben
     view: no
     entities:
-    - binary_sensor.drucker_tracker
-    - binary_sensor.fritz_box_7590_tracker
+    - device_tracker.drucker
+    - device_tracker.wlannetz
+    - device_tracker.fritzbox
 
+  g_fritz:
+    name: FritzBox
+    icon: mdi:access-point-network
+    entities:
+    - weblink.fritz_box
+    - sensor.fritz_netmonitor
+    - sensor.s_fritz_callmonitor
+    - binary_sensor.bs_fritz_repeater
+    - binary_sensor.bs_fritz_box_7390
+    - history_graph.speedtest
+    - history_graph.internet
 
   g_fritz_sensor:
     name: Daten Fritzbox
@@ -230,6 +244,7 @@ group:
     - group.g_tracker_oben
     - group.g_oben_sensor
     - group.g_fritz
+    - group.g_fritz_sensor
     - group.g_licht_treppe_oben
     - history_graph.oben_graph
 #    - camera.buro

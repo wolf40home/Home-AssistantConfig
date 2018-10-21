@@ -19,12 +19,10 @@ group:
     view: no
     entities:
      - binary_sensor.bs_play_mpd
-     - light.theater_volume
      - switch.sw_mpd_hrs
      - switch.sw_mpd_einslive
      - input_number.in_mpd_volume
      - input_number.in_mpd_kueche
      - input_number.in_mpd_wohn
      - media_player.pi_media_mpd
-     - group.g_pi_k_schalter
 

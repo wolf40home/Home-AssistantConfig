@@ -1,8 +1,6 @@
 homeassistant:
   customize:
-    binary_sensor.wolfgang_pc_tracker:
-      icon: mdi:desktop-classic
-      friendly_name: Wolfgang-PC
+
     device_tracker.samsungsmg920fwolfgangsteiner:
       friendly_name: Händy Wolf
       icon: mdi:cellphone-iphone
@@ -16,57 +14,179 @@ homeassistant:
 
 sensor:
   - platform: mqtt
-    state_topic: "/home/tele/swbuero/STATE"
-    name: Rolladen Buero Wlan
+    state_topic: "tele/swbuero/STATE"
+    name: Rollladen Buero Wlan
     unit_of_measurement: "%"
     value_template:  "{{value_json['Wifi'].RSSI}}"
+  - platform: mqtt
+    state_topic: "tele/swbuero/STATE"
+    name: Rollladen Buero SSId
+    value_template:  "{{value_json['Wifi'].SSId}}"
 
   - platform: mqtt
-    name: Rolladen Buero V
-    state_topic: "/home/tele/swbuero/STATE"
+    name: Rollladen Buero V
+    state_topic: "tele/swbuero/STATE"
     unit_of_measurement: "V"
     value_template:  "{{value_json.Vcc}}"
 
   - platform: mqtt
-    name: Rolladen Buero LZ
-    state_topic: "/home/tele/swbuero/STATE"
+    name: Rollladen Buero LZ
+    state_topic: "tele/swbuero/STATE"
     value_template:  "{{value_json.Uptime}}"
 
   - platform: mqtt
-    name: Rolladen Buero T1
-    state_topic: "/home/cmnd/swbueroex/POWER1"
-    availability_topic: "/home/tele/swbuero/LWT"
+    name: Rollladen Buero Version
+    state_topic: "tele/swbuero/STATUS2"
+    value_template:  "{{value_json['StatusFWR'].Version}}"
+   
+  - platform: mqtt
+    name: Rollladen Buero T1
+    state_topic: "cmnd/swbueroex/POWER1"
+    availability_topic: "tele/swbuero/LWT"
 
   - platform: mqtt
-    name: Rolladen Buero T2
-    state_topic: "/home/cmnd/swbueroex/POWER2"
-    availability_topic: "/home/tele/swbuero/LWT"
+    name: Rollladen Buero T2
+    state_topic: "cmnd/swbueroex/POWER2"
+    availability_topic: "tele/swbuero/LWT"
+# POW
+  - platform: mqtt
+    state_topic: "tele/pbuero/STATE"
+    name: Pow Buero Wlan
+    unit_of_measurement: "%"
+    value_template:  "{{value_json['Wifi'].RSSI}}"
+  - platform: mqtt
+    state_topic: "tele/pbuero/STATE"
+    name: Pow Buero SSId
+    value_template:  "{{value_json['Wifi'].SSId}}"
+
+  - platform: mqtt
+    name: Pow Buero V
+    state_topic: "tele/pbuero/STATE"
+    unit_of_measurement: "V"
+    value_template:  "{{value_json.Vcc}}"
+
+  - platform: mqtt
+    name: Pow Buero LZ
+    state_topic: "tele/pbuero/STATE"
+    value_template:  "{{value_json.Uptime}}"
+
+  - platform: mqtt
+    name: Pow Buero Version
+    state_topic: "tele/pbuero/STATUS2"
+    value_template:  "{{value_json['StatusFWR'].Version}}"
+     
+
+
+  - platform: mqtt
+    name: "Pow Buero Today"
+    state_topic: "tele/pbuero/STATUS10"
+    value_template: '{{ value_json.StatusSNS.ENERGY.Today }}'
+    unit_of_measurement: "kWh"
+  - platform: mqtt
+    name: "Pow Buero Power"
+    state_topic: "tele/pbuero/STATUS10"
+    value_template: '{{ value_json.StatusSNS.ENERGY.Power }}'
+    unit_of_measurement: "W"
+  - platform: mqtt
+    name: "Pow Buero Voltage"
+    state_topic: "tele/pbuero/STATUS10"
+    value_template: '{{ value_json.StatusSNS.ENERGY.Voltage }}'
+    unit_of_measurement: "V"
+  - platform: mqtt
+    name: "Pow Buero Current"
+    state_topic: "tele/pbuero/STATUS10"
+    value_template: '{{ value_json.StatusSNS.ENERGY.Current }}'
+    unit_of_measurement: "A"
+    
+  - platform: mqtt
+    name: "Pow Buero Yesterday"
+    state_topic: "tele/pbuero/STATUS10"
+    value_template: '{{ value_json.StatusSNS.ENERGY.Yesterday }}'
+    unit_of_measurement: "kWh"
+  - platform: mqtt
+    name: "Pow Buero Total"
+    state_topic: "tele/pbuero/STATUS10"
+    value_template: '{{ value_json.StatusSNS.ENERGY.Total }}'
+    unit_of_measurement: "kWh"
+  - platform: mqtt
+    name: "Pow Buero Factor"
+    state_topic: "tele/pbuero/STATUS10"
+    value_template: '{{ value_json.StatusSNS.ENERGY.Factor }}'
+
+    
+  - platform: mqtt
+    state_topic: "tele/rf433/STATUS/gt9000"
+    name: RF433 FB
+    value_template:  "{{value_json['Wifi'].RSSI}}"
+
+history_graph:
+
+  gr31:
+    name: Büro Graph
+    entities:
+      - sensor.pow_buero_voltage
+      - sensor.pow_buero_current
+    hours_to_show: 240
+    refresh: 60
 
 binary_sensor:
 
-  - platform: ping
-    name: wolfgang_pc_tracker
-    count: 2
-    host: wolfgang-pc.fritz.box
 
-
+  - platform: mqtt
+    state_topic: "rf434/state"
+    name: "rf434"
+    device_class: power
+    payload_on: "online"
+    payload_off: "offline"
+    value_template: '{{ value_json.state }}'
+    
+  - platform: mqtt
+    name: gt9000_197432_1
+    state_topic: "tele/rf434/quigg_gt9000/197432"
+    payload_on: '{"id":197432,"unit":3,"state":"on"}'
+    payload_off: '{"id":197432,"unit":3,"state":"off"}'
+  - platform: mqtt
+    name: gt9000_197432_2
+    state_topic: "tele/rf434/quigg_gt9000/197432"
+    payload_on: '{"id":197432,"unit":10,"state":"on"}'
+    payload_off: '{"id":197432,"unit":10,"state":"off"}'
+  - platform: mqtt
+    name: gt9000_197432_3
+    state_topic: "tele/rf434/quigg_gt9000/197432"
+    payload_on: '{"id":197432,"unit":7,"state":"on"}'
+    payload_off: '{"id":197432,"unit":7,"state":"off"}'
+  - platform: mqtt
+    name: gt9000_197432_4
+    state_topic: "tele/rf434/quigg_gt9000/197432"
+    payload_on: '{"id":197432,"unit":14,"state":"on"}'
+    payload_off: '{"id":197432,"unit":14,"state":"off"}'
 switch:
   - platform: mqtt
-    name: Rolladen Buero Dual
-    state_topic: "/home/cmnd/swbueroex/POWER"
-    availability_topic: "/home/tele/swbuero/LWT"
-    command_topic: "/home/cmnd/swbueroex/POWER"
+    name: Rollladen Buero Dual
+    state_topic: "tele/swbueroex/POWER"
+    availability_topic: "tele/swbuero/LWT"
+    command_topic: "cmnd/swbueroex/POWER"
     qos: 1
     optimistic: false
     retain: true
 
+  - platform: mqtt
+    name: Pow Buero
+    state_topic: "tele/pbuero/POWER"
+    availability_topic: "tele/pbuero/LWT"
+    command_topic: "cmnd/pbuero/POWER"
+    qos: 1
+    optimistic: false
+    retain: true
+
+
 cover:
   - platform: mqtt
     name: Rollladen Buero
-    state_topic: "/home/cmnd/swbueroex/POWER"
-    command_topic: "/home/cmnd/swbuero/Backlog"
-    availability_topic: "/home/tele/swbuero/LWT"
-    qos: 0
+    state_topic: "tele/swbueroex/POWER"
+    command_topic: "cmnd/swbuero/Backlog"
+    availability_topic: "tele/swbuero/LWT"
+    qos: 1
     retain: true
     payload_open: "power1 ON"
     payload_close: "power2 ON"
@@ -75,35 +195,55 @@ cover:
     state_closed: "OFF"
     optimistic: false
 
+timer:
+  rollladen_buero_auf:
+    name: Rollladen Buero Auf
+    duration: '00:00:30'
+  rollladen_buero_zu:
+    name: Rollladen Buero Zu
+    duration: '00:00:30'
+
 automation:
 
-  - alias: Rolladen Buero Auf Manuell
+  - alias: Rollladen Buero Auf Manuell
     trigger:
       - platform: state
-        entity_id: sensor.rolladen_buero_t1
+        entity_id: sensor.rollladen_buero_t1
         to: "ON"
     action:
       - service: cover.open_cover
         entity_id: cover.rollladen_buero
-      - delay: 0:01    
+      - delay: 0:00:50   
       - service: cover.stop_cover
         entity_id: cover.rollladen_buero
       - service: switch.turn_on
-        entity_id: switch.rolladen_buero_dual
+        entity_id: switch.rollladen_buero_dual
 
-  - alias: Rolladen Buero Zu Manuell
+  - alias: Rollladen Buero Zu Manuell
     trigger:
       - platform: state
-        entity_id: sensor.rolladen_buero_t2
+        entity_id: sensor.rollladen_buero_t2
         to: "ON"
     action:
       - service: cover.close_cover
         entity_id: cover.rollladen_buero
-      - delay: 0:01    
+      - delay: 0:00:50    
       - service: cover.stop_cover
         entity_id: cover.rollladen_buero
       - service: switch.turn_off
-        entity_id: switch.rolladen_buero_dual
+        entity_id: switch.rollladen_buero_dual
+
+  - alias: Rollladen Buero stop Manuell
+    trigger:
+      - platform: state
+        entity_id: sensor.rollladen_buero_t1
+        to: "OFF"
+      - platform: state
+        entity_id: sensor.rollladen_buero_t2
+        to: "OFF"
+    action:
+      - service: cover.stop_cover
+        entity_id: cover.rollladen_buero
 
 group:
 
@@ -111,21 +251,50 @@ group:
     name: Büro Tracker 
     view: no
     entities:
-    - binary_sensor.wolfgang_pc_tracker
+    - device_tracker.wolfgangpc
+    - device_tracker.ipad
+    - device_tracker.wolfgangss6
+    - device_tracker.rf433
+    - device_tracker.swbuero
     - device_tracker.w7der03852l
     - device_tracker.wtdelvse044110l
 
   g_buero_schalter:
-    name: Buero Rolladen Schalter 
+    name: Buero Rollladen Schalter 
     view: no
     entities:
-    - switch.rolladen_buero_dual
-    - sensor.rolladen_buero_wlan
-    - sensor.rolladen_Buero_v
-    - sensor.rolladen_buero_lz
-    - sensor.rolladen_buero_t1
-    - sensor.rolladen_buero_t2
-
+    - weblink.rollladen_buero_web
+    - cover.rollladen_buero
+    - switch.rollladen_buero_dual
+    - sensor.rollladen_buero_wlan
+    - sensor.rollladen_Buero_v
+    - sensor.rollladen_buero_lz
+    - sensor.rollladen_buero_t1
+    - sensor.rollladen_buero_t2
+  g_buero_pow:
+    name: Buero POW 
+    view: no
+    entities:
+    - weblink.pow_buero_web
+    - switch.pow_buero
+    - sensor.pow_buero_wlan
+    - sensor.pow_buero_v
+    - sensor.pow_buero_lz
+    - sensor.pow_buero_voltage
+    - sensor.pow_buero_current
+    - sensor.pow_buero_power
+    - sensor.pow_buero_factor
+    - sensor.pow_buero_today
+    - sensor.pow_buero_yesterday
+    - sensor.pow_buero_total
+  g_buero_fb:
+    name: Buero 433 FB 
+    view: no
+    entities:
+    - binary_sensor.gt9000_197432_1
+    - binary_sensor.gt9000_197432_2    
+    - binary_sensor.gt9000_197432_3
+    - binary_sensor.gt9000_197432_4    
   g_buero:
     view: yes
     icon: mdi:paperclip
@@ -133,5 +302,7 @@ group:
     entities:
     - group.g_buero_tracker
     - group.g_buero_schalter
-    - cover.rollladen_buero
+    - group.g_buero_pow
+    - group.g_buero_fb
+    - history_graph.buro_graph
 

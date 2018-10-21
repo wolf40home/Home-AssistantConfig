@@ -17,7 +17,7 @@ logger:
     homeassistant.components.http: warn
     homeassistant.components.shell_command: warn
     homeassistant.components.device_tracker: warn
-    homeassistant.components.mqtt: warn
+    homeassistant.components.mqtt: error
     homeassistant.components.automation: warn
     homeassistant.components.websocket: warn
     homeassistant.components.discovery: warn
@@ -29,11 +29,13 @@ logger:
     homeassistant.components.sensor.usps: warn
     homeassistant.components.feedreader: warn
     homeassistant.components: warn
+    homeassistant.components.binary_sensor.mqtt: error
     bellows.uart: warn
     homeassistant.core: warn
     homeassistant.helpers.script: warn
     homeassistant.helpers.entity: warn
     homeassistant.helpers.restore_state: warn
+    homeassistant.helpers.template: critical
     homeassistant.loader: warn
     homeassistant.setup: warn
     phue: warn
