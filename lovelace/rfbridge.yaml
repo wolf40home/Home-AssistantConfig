@@ -1,0 +1,19 @@
+      - type: entities
+        title: RF Bridge Buero
+        entities:
+          - type: weblink
+            name: Link
+            url: http://rf-bridge.fritz.box
+            icon: mdi:security-network
+          - entity: sensor.rf_bridge_result
+            name: letzter Wert
+          - entity: binary_sensor.rf_bridge_lwt
+            name: Gateway
+          - entity:  sensor.rf_bridge_wlan
+            name: Wlan
+          - entity: sensor.rf_bridge_ssid
+            name: Router
+          - entity: sensor.rf_bridge_v
+            name: Volt
+          - entity: sensor.rf_bridge_lz
+            name: Laufzeit

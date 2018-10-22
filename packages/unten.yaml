@@ -39,74 +39,33 @@ sensor:
 
 binary_sensor:   
   - platform: mqtt
-    name: "Tuer Contact Haus"
+    name: "Haustuer Kontakt"
     state_topic: 'home/OpenDoorHaus'
     payload_on: 'on'
     payload_off: 'off'
     device_class: door
     
   - platform: mqtt
-    name: "Fenster Contact Treppe"
+    name: "Treppenfenster Kontakt"
     state_topic: 'home/OpenFensterTreppe'
     payload_on: 'on'
     payload_off: 'off'
     device_class: window
     
   - platform: mqtt
-    name: "Fenster Contact WC"
+    name: "WC Fenster Kontakt"
     state_topic: 'home/OpenFensterWc'
     payload_on: 'on'
     payload_off: 'off'
     device_class: window
 
   - platform: mqtt
-    name: "Fenster Contact Vorrat"
+    name: "Vorratsfenster Kontakt"
     state_topic: 'home/OpenFensterVorrat'
     payload_on: 'on'
     payload_off: 'off'
     device_class: window
-    
-  - platform: mqtt
-    name: "Tuer Contact Haus Alarm"
-    state_topic: "tele/rfbridge/RFRECEIVED"
-    payload_on: "02F90B"
-    payload_off: "02F907"
-    qos: 0
-    device_class: battery
-    value_template: '{{ value_json.RfReceived.Data }}'
-
-
-    
-  - platform: mqtt
-    name: "Fenster Contact Treppe Alarm"
-    state_topic: "tele/rfbridge/RFRECEIVED"
-    payload_on: "290DEB"
-    payload_off: "290DE7"
-    qos: 0
-    device_class: battery
-    value_template: '{{ value_json.RfReceived.Data }}'
-
-    
-  - platform: mqtt
-    name: "Fenster Contact Wc Alarm"
-    state_topic: "tele/rfbridge/RFRECEIVED"
-    payload_on: "5E63EB"
-    payload_off: "5E63E7"
-    qos: 0
-    device_class: battery
-    value_template: '{{ value_json.RfReceived.Data }}'
-
-    
-  - platform: mqtt
-    name: "Fenster Contact Vorrat Alarm"
-    state_topic: "tele/rfbridge/RFRECEIVED"
-    payload_on: "A805EB"
-    payload_off: "A805E7"
-    qos: 0
-    device_class: battery
-    value_template: '{{ value_json.RfReceived.Data }}'
-
-    
+   
 switch:
   - platform: mqtt
     name: Lade Schalter Vorrat
@@ -150,115 +109,6 @@ automation:
       - service: switch.turn_off
         entity_id: switch.lade_schalter_vorrat
 
-  - alias: OpenDoorHausON
-    initial_state: 'on'
-    trigger:
-      - platform: state
-        entity_id: sensor.rf_bridge_result
-        to: '02F90E'
-    action:
-      - service: mqtt.publish
-        data:
-          topic: "home/OpenDoorHaus"
-          payload: 'on'
-          qos: 0
-          retain: true
-          
-  - alias: OpenDoorHausOff
-    initial_state: 'on'
-    trigger:
-      - platform: state
-        entity_id: sensor.rf_bridge_result
-        to: '02F907'
-    action:
-      - service: mqtt.publish
-        data:
-          topic: "home/OpenDoorHaus"
-          payload: 'off'
-          qos: 0
-          retain: true
-    
-
-  - alias: OpenFensterTreppeON
-    initial_state: 'on'
-    trigger:
-      - platform: state
-        entity_id: sensor.rf_bridge_result
-        to: '290DEE'
-    action:
-      - service: mqtt.publish
-        data:
-          topic: "home/OpenFensterTreppe"
-          payload: 'on'
-          qos: 0
-          retain: true
-  - alias: OpenFensterTreppeOff
-    initial_state: 'on'
-    trigger:
-      - platform: state
-        entity_id: sensor.rf_bridge_result
-        to: '290DE7'
-    action:
-      - service: mqtt.publish
-        data:
-          topic: "home/OpenFensterTreppe"
-          payload: 'off'
-          qos: 0
-          retain: true
-
-  - alias: OpenFensterWcON
-    initial_state: 'on'
-    trigger:
-      - platform: state
-        entity_id: sensor.rf_bridge_result
-        to: '5E63EE'
-    action:
-      - service: mqtt.publish
-        data:
-          topic: "home/OpenFensterWc"
-          payload: 'on'
-          qos: 0
-          retain: true
-  - alias: OpenFensterWcOff
-    initial_state: 'on'
-    trigger:
-      - platform: state
-        entity_id: sensor.rf_bridge_result
-        to: '5E63E7'
-    action:
-      - service: mqtt.publish
-        data:
-          topic: "home/OpenFensterWc"
-          payload: 'off'
-          qos: 0
-          retain: true
-          
-  - alias: OpenFensterVorratON
-    initial_state: 'on'
-    trigger:
-      - platform: state
-        entity_id: sensor.rf_bridge_result
-        to: 'A805EE'
-    action:
-      - service: mqtt.publish
-        data:
-          topic: "home/OpenFensterVorrat"
-          payload: 'on'
-          qos: 0
-          retain: true
-  - alias: OpenFensterVorratOff
-    initial_state: 'on'
-    trigger:
-      - platform: state
-        entity_id: sensor.rf_bridge_result
-        to: 'A805E7'
-    action:
-      - service: mqtt.publish
-        data:
-          topic: "home/OpenFensterVorrat"
-          payload: 'off'
-          qos: 0
-          retain: true
 
 group:
 
@@ -287,18 +137,14 @@ group:
     - sensor.wohnzimmer_feuchte
     - sensor.vorrat_temperatur
     - sensor.vorrat_feuchte
-    - binary_sensor.tuer_contact_kueche
-    - binary_sensor.tuer_contact_kueche_alarm
-    - binary_sensor.tuer_contact_haus
-    - binary_sensor.tuer_contact_haus_alarm
-    - binary_sensor.fenster_contact_kueche
-    - binary_sensor.fenster_contact_kueche_alarm
-    - binary_sensor.fenster_contact_treppe
-    - binary_sensor.fenster_contact_treppe_alarm
-    - binary_sensor.fenster_contact_wc
-    - binary_sensor.fenster_contact_wc_alarm
-    - binary_sensor.fenster_contact_vorrat
-    - binary_sensor.fenster_contact_vorrat_alarm
+    - binary_sensor.haustuer_kontakt
+    - binary_sensor.haustuer_kontakt_batt
+    - binary_sensor.treppenfenster_kontakt
+    - binary_sensor.treppenfenster_kontakt_batt
+    - binary_sensor.wc_fenster_kontakt
+    - binary_sensor.wc_fenster_kontakt_batt
+    - binary_sensor.vorratsfenster_kontakt
+    - binary_sensor.vorratsfenster_kontakt_batt
 
   g_unten:
     view: yes

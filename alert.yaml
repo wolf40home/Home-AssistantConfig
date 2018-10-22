@@ -7,10 +7,11 @@ a_speicher_schalter:
   can_acknowledge: True
   notifiers:
     - wolfgang
-a_tuer_contact_haus:
+    
+a_haustuer_kontakt:
   name: '*Türkontakt* Haus Auf'
-  done_message: Türkontakt Haus Zu
-  entity_id: binary_sensor.tuer_contact_haus
+  done_message: '*Türkontakt* Haus Zu'
+  entity_id: binary_sensor.haustuer_alarm
   state: 'on'
   repeat: 
     - 10
@@ -19,20 +20,20 @@ a_tuer_contact_haus:
   can_acknowledge: True
   notifiers:
     - wolfhome
-a_tuer_contact_haus_alarm:
+a_haustuer_kontakt_batt:
   name: '*Türkontakt* Haus Batterie'
   done_message: '*Türkontakt* Haus Batt OK'
-  entity_id: binary_sensor.tuer_contact_haus_alarm
+  entity_id: binary_sensor.haustuer_kontakt_batt
   state: 'on'
   repeat: 10
   can_acknowledge: True
   notifiers:
     - wolfhome
 
-a_tuer_contact_kueche:
+a_kuechentuer_kontakt:
   name: '*Türkontakt* Kueche Auf'
-  done_message: Türkontakt Küche Zu
-  entity_id: binary_sensor.tuer_contact_kueche
+  done_message: '*Türkontakt* Küche Zu'
+  entity_id: binary_sensor.kuechentuer_alarm
   state: 'on'
   repeat: 
     - 10
@@ -41,217 +42,20 @@ a_tuer_contact_kueche:
   can_acknowledge: True
   notifiers:
     - wolfhome
-a_tuer_contact_kueche_alarm:
+a_kuechentuer_kontakt_batt:
   name: '*Türkontakt* Küche Batterie'
   done_message: '*Türkontakt* Küche Batt OK'
-  entity_id: binary_sensor.tuer_contact_kueche_alarm
-  state: 'on'
-  repeat: 10
-  can_acknowledge: True
-  notifiers:
-    - wolfhome
-
-a_fenster_contact_kueche:
-  name: Fensterkontakt Küche Auf
-  done_message: '*Fensterkontakt* Küche Zu'
-  entity_id: binary_sensor.fenster_contact_kueche
-  state: 'on'
-  repeat: 
-    - 10
-    - 30
-    - 60
-  can_acknowledge: True
-  notifiers:
-    - wolfhome
-a_fenster_contact_kueche_alarm:
-  name: Fensterkontakt Küche Batterie
-  done_message: '*Fensterkontakt* Küche Batt OK'
-  entity_id: binary_sensor.fenster_contact_kueche_alarm
-  state: 'on'
-  repeat: 10
-  can_acknowledge: True
-  notifiers:
-    - wolfhome
-
-a_fenster_contact_treppe:
-  name: Fensterkontakt Treppe Auf
-  done_message: '*Fensterkontakt* Treppe Zu'
-  entity_id: binary_sensor.fenster_contact_treppe
-  state: 'on'
-  repeat: 
-    - 10
-    - 30
-    - 60
-  can_acknowledge: True
-  notifiers:
-    - wolfhome
-a_fenster_contact_treppe_alarm:
-  name: Fensterkontakt Treppe Batterie
-  done_message: '*Fensterkontakt* Treppe Batt OK'
-  entity_id: binary_sensor.fenster_contact_treppe_alarm
-  state: 'on'
-  repeat: 10
-  can_acknowledge: True
-  notifiers:
-    - wolfhome
-
-a_fenster_contact_wc:
-  name: Fensterkontakt WC Auf
-  done_message: '*Fensterkontakt* WC Zu'
-  entity_id: binary_sensor.fenster_contact_wc
-  state: 'on'
-  repeat: 
-    - 10
-    - 30
-    - 60
-  can_acknowledge: True
-  notifiers:
-    - wolfhome
-a_fenster_contact_wc_alarm:
-  name: Fensterkontakt WC Batterie
-  done_message: '*Fensterkontakt* WC Batt OK'
-  entity_id: binary_sensor.fenster_contact_wc_alarm
-  state: 'on'
-  repeat: 10
-  can_acknowledge: True
-  notifiers:
-    - wolfhome
-
-a_fenster_contact_vorrat:
-  name: Fensterkontakt Vorrat Auf
-  done_message: '*Fensterkontakt* Vorrat Zu'
-  entity_id: binary_sensor.fenster_contact_vorrat
-  state: 'on'
-  repeat: 
-    - 10
-    - 30
-    - 60
-  can_acknowledge: True
-  notifiers:
-    - wolfhome
-a_fenster_contact_vorrat_alarm:
-  name: Fensterkontakt Vorrat Batterie
-  done_message: '*Fensterkontakt* Vorrat Batt OK'
-  entity_id: binary_sensor.fenster_contact_vorrat_alarm
-  state: 'on'
-  repeat: 10
-  can_acknowledge: True
-  notifiers:
-    - wolfhome
-
-a_fenster_contact_wohnzimmer:
-  name: '*Fensterkontakt* Wohnzimmer Auf'
-  done_message: '*Fensterkontakt* Wohnzimmer Zu'
-  entity_id: binary_sensor.fenster_contact_wohnzimmer
-  state: 'on'
-  repeat: 
-    - 10
-    - 30
-    - 60
-  can_acknowledge: True
-  notifiers:
-    - wolfhome
-a_fenster_contact_wohnzimmer_alarm:
-  name: '*Fensterkontakt* Wohnzimmer Batterie'
-  done_message: '*Fensterkontakt* Wohnzimmer Batt OK'
-  entity_id: binary_sensor.fenster_contact_wohnzimmer_alarm
+  entity_id: binary_sensor.kuechentuer_kontakt_batt
   state: 'on'
   repeat: 10
   can_acknowledge: True
   notifiers:
     - wolfhome
     
-a_fenster_contact_wohnzimmerr:
-  name: '*Fensterkontakt* Wohnzimmer Rechts Auf'
-  done_message: '*Fensterkontakt* Wohnzimmer Rechts Zu'
-  entity_id: binary_sensor.fenster_contact_wohnzimmer_r
-  state: 'on'
-  repeat: 
-    - 10
-    - 30
-    - 60
-  can_acknowledge: True
-  notifiers:
-    - wolfhome
-a_fenster_contact_wohnzimmerr_alarm:
-  name: '*Fensterkontakt* Wohnzimmer Rechts Batterie'
-  done_message: '*Fensterkontakt* Wohnzimmer Rechts Batt OK'
-  entity_id: binary_sensor.fenster_contact_wohnzimmer_r_alarm
-  state: 'on'
-  repeat: 10
-  can_acknowledge: True
-  notifiers:
-    - wolfhome
-    
-a_fenster_contact_wohnzimmerl:
-  name: '*Fensterkontakt* Wohnzimmer Links Auf'
-  done_message: '*Fensterkontakt* Wohnzimmer Links Zu'
-  entity_id: binary_sensor.fenster_contact_wohnzimmer_l
-  state: 'on'
-  repeat: 
-    - 10
-    - 30
-    - 60
-  can_acknowledge: True
-  notifiers:
-    - wolfhome
-a_fenster_contact_wohnzimmerl_alarm:
-  name: '*Fensterkontakt* Wohnzimmer Links Batterie'
-  done_message: '*Fensterkontakt* Wohnzimmer Batt Links OK'
-  entity_id: binary_sensor.fenster_contact_wohnzimmer_l_alarm
-  state: 'on'
-  repeat: 10
-  can_acknowledge: True
-  notifiers:
-    - wolfhome
-    
-a_fenster_contact_keller_r:
-  name: '*Fensterkontakt* Keller rechts Auf'
-  done_message: '*Fensterkontakt* Keller rechts Zu'
-  entity_id: binary_sensor.fenster_contact_keller_r
-  state: 'on'
-  repeat: 
-    - 10
-    - 30
-    - 60
-  can_acknowledge: True
-  notifiers:
-    - wolfhome
-a_fenster_contact_keller_r_alarm:
-  name: '*Fensterkontakt* Keller rechts Batterie'
-  done_message: '*Fensterkontakt* Keller rechts Batt OK'
-  entity_id: binary_sensor.fenster_contact_keller_r_alarm
-  state: 'on'
-  repeat: 10
-  can_acknowledge: True
-  notifiers:
-    - wolfhome
-
-a_fenster_contact_keller_l:
-  name: '*Fensterkontakt* Keller links Auf'
-  done_message: '*Fensterkontakt* Keller links Zu'
-  entity_id: binary_sensor.fenster_contact_keller_l
-  state: 'on'
-  repeat: 
-    - 10
-    - 30
-    - 60
-  can_acknowledge: True
-  notifiers:
-    - wolfhome
-a_fenster_contact_keller_l_alarm:
-  name: '*Fensterkontakt* Keller links Batterie'
-  done_message: '*Fensterkontakt* Keller links Batt OK'
-  entity_id: binary_sensor.fenster_contact_keller_l_alarm
-  state: 'on'
-  repeat: 10
-  can_acknowledge: True
-  notifiers:
-    - wolfhome
-a_tuer_contact_wohnzimmer:
+a_wohnzimmertuer_kontakt:
   name: '*Türkontakt* Wohnzimmer Auf'
-  done_message: '*Türkontakt* Wohnzimmer Auf Zu'
-  entity_id: binary_sensor.tuer_contact_wohnzimmer
+  done_message: '*Türkontakt* Wohnzimmer Zu'
+  entity_id: binary_sensor.wohnzimmertuer_alarm
   state: 'on'
   repeat: 
     - 10
@@ -260,16 +64,215 @@ a_tuer_contact_wohnzimmer:
   can_acknowledge: True
   notifiers:
     - wolfhome
-a_tuer_contact_wohnzimmer_alarm:
+a_wohnzimmertuer_kontakt_batt:
   name: '*Türkontakt* Wohnzimmer Batterie'
   done_message: '*Türkontakt* Wohnzimmer Batt OK'
-  entity_id: binary_sensor.tuer_contact_wohnzimmer_alarm
+  entity_id: binary_sensor.wohnzimmertuer_kontakt_batt
   state: 'on'
   repeat: 10
   can_acknowledge: True
   notifiers:
     - wolfhome
-#a_bewegung_garage:
+
+a_kuechenfenster_kontakt:
+  name: '*Fensterkontakt* Küche Auf'
+  done_message: '*Fensterkontakt* Küche Zu'
+  entity_id: binary_sensor.kuechenfenster_kontakt
+  state: 'on'
+  repeat: 
+    - 10
+    - 30
+    - 60
+  can_acknowledge: True
+  notifiers:
+    - wolfhome
+a_kuechenfenster_kontakt_batt:
+  name: '*Fensterkontakt* Küche Batterie'
+  done_message: '*Fensterkontakt* Küche Batt OK'
+  entity_id: binary_sensor.kuechenfenster_kontakt_batt
+  state: 'on'
+  repeat: 10
+  can_acknowledge: True
+  notifiers:
+    - wolfhome
+
+a_treppenfenster_kontakt:
+  name: '*Fensterkontakt* Treppe Auf'
+  done_message: '*Fensterkontakt* Treppe Zu'
+  entity_id: binary_sensor.treppenfenster_kontakt
+  state: 'on'
+  repeat: 
+    - 10
+    - 30
+    - 60
+  can_acknowledge: True
+  notifiers:
+    - wolfhome
+a_treppenfenster_kontakt_batt:
+  name: '*Fensterkontakt* Treppe Batterie'
+  done_message: '*Fensterkontakt* Treppe Batt OK'
+  entity_id: binary_sensor.treppenfenster_kontakt_batt
+  state: 'on'
+  repeat: 10
+  can_acknowledge: True
+  notifiers:
+    - wolfhome
+
+a_wc_fenster_kontakt:
+  name: '*Fensterkontakt* WC Auf'
+  done_message: '*Fensterkontakt* WC Zu'
+  entity_id: binary_sensor.wc_fenster_kontakt
+  state: 'on'
+  repeat: 
+    - 10
+    - 30
+    - 60
+  can_acknowledge: True
+  notifiers:
+    - wolfhome
+a_wc_fenster_kontakt_batt:
+  name: '*Fensterkontakt* WC Batterie'
+  done_message: '*Fensterkontakt* WC Batt OK'
+  entity_id: binary_sensor.wc_fenster_kontakt_batt
+  state: 'on'
+  repeat: 10
+  can_acknowledge: True
+  notifiers:
+    - wolfhome
+
+a_vorratsfenster_kontakt:
+  name: '*Fensterkontakt* Vorrat Auf'
+  done_message: '*Fensterkontakt* Vorrat Zu'
+  entity_id: binary_sensor.vorratsfenster_kontakt
+  state: 'on'
+  repeat: 
+    - 10
+    - 30
+    - 60
+  can_acknowledge: True
+  notifiers:
+    - wolfhome
+a_vorratsfenster_kontakt_batt:
+  name: '*Fensterkontakt* Vorrat Batterie'
+  done_message: '*Fensterkontakt* Vorrat Batt OK'
+  entity_id: binary_sensor.vorratsfenster_kontakt_batt
+  state: 'on'
+  repeat: 10
+  can_acknowledge: True
+  notifiers:
+    - wolfhome
+
+a_wohnzimmerfenster_kontakt:
+  name: '*Fensterkontakt* Wohnzimmer Auf'
+  done_message: '*Fensterkontakt* Wohnzimmer Zu'
+  entity_id: binary_sensor.wohnzimmerfenster_kontakt
+  state: 'on'
+  repeat: 
+    - 10
+    - 30
+    - 60
+  can_acknowledge: True
+  notifiers:
+    - wolfhome
+a_wohnzimmerfenster_kontakt_batt:
+  name: '*Fensterkontakt* Wohnzimmer Batterie'
+  done_message: '*Fensterkontakt* Wohnzimmer Batt OK'
+  entity_id: binary_sensor.wohnzimmerfenster_kontakt_batt
+  state: 'on'
+  repeat: 10
+  can_acknowledge: True
+  notifiers:
+    - wolfhome
+    
+a_wohnzimmerfenster_kontaktr:
+  name: '*Fensterkontakt* Wohnzimmer Rechts Auf'
+  done_message: '*Fensterkontakt* Wohnzimmer Rechts Zu'
+  entity_id: binary_sensor.wohnzimmerfenster_kontakt_r
+  state: 'on'
+  repeat: 
+    - 10
+    - 30
+    - 60
+  can_acknowledge: True
+  notifiers:
+    - wolfhome
+a_wohnzimmerfenster_kontaktr_batt:
+  name: '*Fensterkontakt* Wohnzimmer Rechts Batterie'
+  done_message: '*Fensterkontakt* Wohnzimmer Rechts Batt OK'
+  entity_id: binary_sensor.wohnzimmerfenster_kontakt_r_batt
+  state: 'on'
+  repeat: 10
+  can_acknowledge: True
+  notifiers:
+    - wolfhome
+    
+a_wohnzimmerfenster_kontaktl:
+  name: '*Fensterkontakt* Wohnzimmer Links Auf'
+  done_message: '*Fensterkontakt* Wohnzimmer Links Zu'
+  entity_id: binary_sensor.wohnzimmerfenster_kontakt_l
+  state: 'on'
+  repeat: 
+    - 10
+    - 30
+    - 60
+  can_acknowledge: True
+  notifiers:
+    - wolfhome
+a_wohnzimmerfenster_kontaktl_batt:
+  name: '*Fensterkontakt* Wohnzimmer Links Batterie'
+  done_message: '*Fensterkontakt* Wohnzimmer Batt Links OK'
+  entity_id: binary_sensor.wohnzimmerfenster_kontakt_l_batt
+  state: 'on'
+  repeat: 10
+  can_acknowledge: True
+  notifiers:
+    - wolfhome
+    
+a_kellerfenster_kontakt_r:
+  name: '*Fensterkontakt* Keller rechts Auf'
+  done_message: '*Fensterkontakt* Keller rechts Zu'
+  entity_id: binary_sensor.kellerfenster_kontakt_r
+  state: 'on'
+  repeat: 
+    - 10
+    - 30
+    - 60
+  can_acknowledge: True
+  notifiers:
+    - wolfhome
+a_kellerfenster_kontakt_r_batt:
+  name: '*Fensterkontakt* Keller rechts Batterie'
+  done_message: '*Fensterkontakt* Keller rechts Batt OK'
+  entity_id: binary_sensor.kellerfenster_kontakt_r_batt
+  state: 'on'
+  repeat: 10
+  can_acknowledge: True
+  notifiers:
+    - wolfhome
+
+a_kellerfenster_kontakt_l:
+  name: '*Fensterkontakt* Keller links Auf'
+  done_message: '*Fensterkontakt* Keller links Zu'
+  entity_id: binary_sensor.kellerfenster_kontakt_l
+  state: 'on'
+  repeat: 
+    - 10
+    - 30
+    - 60
+  can_acknowledge: True
+  notifiers:
+    - wolfhome
+a_kellerfenster_kontakt_l_batt:
+  name: '*Fensterkontakt* Keller links Batterie'
+  done_message: '*Fensterkontakt* Keller links Batt OK'
+  entity_id: binary_sensor.kellerfenster_kontakt_l_batt
+  state: 'on'
+  repeat: 10
+  can_acknowledge: True
+  notifiers:
+    - wolfhome
+
+    #a_bewegung_garage:
 #  name: '*Bewegung* Garage'
 #  done_message: '*Bewegung* Garage aus'
 #  entity_id: binary_sensor.licht_garage_taste

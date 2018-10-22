@@ -28,24 +28,27 @@ switch:
 
 binary_sensor:
 
-
-#NAS
-
-
   - platform: mqtt
     name: Licht Keller Flur Taste
     state_topic: "cmnd/LKellerFlurex/POWER1"
 
   - platform: mqtt
-    name: "Fenster Contact Keller L"
+    name: "Kellerfenster Kontakt L"
     state_topic: 'home/OpenFensterKellerL'
     payload_on: 'on'
     payload_off: 'off'
     device_class: window
 
   - platform: mqtt
-    name: "Fenster Contact Keller R"
+    name: "Kellerfenster Kontakt R"
     state_topic: 'home/OpenFensterKellerR'
+    payload_on: 'on'
+    payload_off: 'off'
+    device_class: window
+
+  - platform: mqtt
+    name: "Kellerfenster Kontakt"
+    state_topic: 'home/OpenFensterKeller'
     payload_on: 'on'
     payload_off: 'off'
     device_class: window
@@ -376,10 +379,12 @@ group:
     - sensor.keller_feuchte
     - sensor.licht_keller_flur_temperatur
     - sensor.licht_keller_flur_feuchte
-    - binary_sensor.fenster_contact_keller_l
-    - binary_sensor.fenster_contact_keller_r
-    - binary_sensor.fenster_contact_keller_l_alarm
-    - binary_sensor.fenster_contact_keller_r_alarm
+    - binary_sensor.kellerfenster_kontakt
+    - binary_sensor.kellerfenster_kontakt_batt
+    - binary_sensor.kellerfenster_kontakt_l
+    - binary_sensor.kellerfenster_kontakt_l_batt
+    - binary_sensor.kellerfenster_kontakt_r
+    - binary_sensor.kellerfenster_kontakt_r_batt
 
   g_keller:
     view: yes

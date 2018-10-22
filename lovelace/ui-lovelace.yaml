@@ -1,0 +1,1298 @@
+title: Wolfgangs und Barbaras Home
+# Optional background for all views. Check https://developer.mozilla.org/en-US/docs/Web/CSS/background for more examples.
+background: center / cover no-repeat url("/background.png") fixed
+# Exclude entities from "Unused entities" view
+
+resources:
+  - url: /local/mini-graph-card/mini-graph-card.js?v=0.0.5
+    type: module
+    
+excluded_entities:
+  - binary_sensor.bs_play_1live
+  - binary_sensor.bs_play_rsh
+  - binary_sensor.bs_sun_up
+  - binary_sensor.bs_workday 
+  - device_tracker.dm500plus
+  - history_graph.buro_graph
+  - history_graph.garage_graph 
+  - history_graph.internet 
+  - history_graph.keller_graph 
+  - history_graph.kuche_graph 
+  - history_graph.luftdaten 
+  - history_graph.oben_graph 
+  - history_graph.sensoren_alle 
+  - history_graph.speedtest 
+  - history_graph.speicher_graph 
+  - history_graph.test_graph 
+  - history_graph.unten_graph 
+  - history_graph.wetter 
+  - history_graph.wohnzimmer_graph 
+  - script.sc_einslive 
+  - script.sc_hsr 
+  - script.input_select_harmony
+  - script.licht_garage_motion
+  - script.licht_keller_flur_motion
+  - script.licht_treppe_speicher_motion
+  - script
+  - group
+
+
+
+views:
+    # View tab title.
+  - icon: mdi:home
+    title: Home
+    # Optional unique id for direct access /lovelace/${id}
+    id: home
+    # Optional background (overwrites the global background).
+    background: radial-gradient(crimson, skyblue)
+    # Each view can have a different theme applied. Theme should be defined in the frontend.
+    theme: dark-mode
+    # The cards to show on this view.
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: weather-forecast
+            entity: weather.openweathermap
+          - type: entities
+            entities:
+            - sun.sun
+            - sensor.mond
+            - sensor.druck
+            - input_boolean.boolean_urlaub
+      - type: entities
+        title: Radio
+        show_header_toggle: false
+        entities:
+          - binary_sensor.bs_play_mpd
+          - switch.sw_mpd_hrs
+          - switch.sw_mpd_einslive
+          - input_number.in_mpd_volume
+          - input_number.in_mpd_kueche
+          - input_number.in_mpd_wohn
+          - media_player.pi_media_mpd
+      - type: picture-entity
+        entity: camera.borkum
+      - type: picture-entity
+        entity: camera.borkum_wetter
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            title: 'Luftdaten Nievenheim'
+            refresh_interval: 60
+            hours_to_show: 240
+            entities:
+              - sensor.luftdaten_pm10
+              - sensor.luftdaten_pm25
+          - type: entities
+            entities:
+              - sensor.luftdaten_pm10
+              - sensor.luftdaten_pm25
+      - type: vertical-stack
+        cards:
+           - type: history-graph
+             title: 'Wetter'
+             refresh_interval: 60
+             hours_to_show: 240
+             entities:
+               - sensor.s_weather_wind_speed
+               - sensor.s_weather_temperature
+               - sensor.s_weather_dewpoint_temperature
+               - sensor.s_weather_pressure
+               - sensor.s_weather_humidity
+           - type: entities
+             entities:
+               - sensor.s_weather_wind_speed
+               - sensor.s_weather_temperature
+               - sensor.s_weather_dewpoint_temperature
+               - sensor.s_weather_pressure
+               - sensor.s_weather_humidity
+      - type: entity-filter
+        entities:
+          - binary_sensor.bs_fritz_box_7390 
+          - binary_sensor.bs_fritz_repeater
+          - binary_sensor.cook_key_tracker
+          - binary_sensor.dm500plus_tracker
+          - binary_sensor.drucker_tracker
+          - binary_sensor.fritz_box_7590_tracker
+          - binary_sensor.nas3_tracker
+          - binary_sensor.piradio2_tracker
+          - binary_sensor.piradio_tracker
+          - binary_sensor.wolfgang_da2_tracker
+          - binary_sensor.wolfgang_pc_tracker
+        state_filter:
+          - 'off'
+        card:
+        title: People at home
+      - type: entity-filter
+        entities:
+          - device_tracker.amazoncdea109b9 
+          - device_tracker.barbarasipad
+          
+          
+        state_filter:
+          - 'off'
+              
+
+        # The picture entity card will represent an entity with a picture
+      - type: picture-entity
+        image: https://www.home-assistant.io/images/default-social.png
+        entity: input_select.theme_select
+
+    # Specify a tab icon if you want the view tab to be an icon.
+
+
+
+  - icon: mdi:stairs
+    title: Keller
+    id: keller
+    cards:
+      - type: glance
+        title: Radio Schalter Keller
+        entities:
+          - entity: weblink.radio_schalter_keller_web
+            name: Link
+          - entity: sensor.radio_schalter_keller_version
+            name: Version
+          - entity: sensor.radio_schalter_keller_lz
+            name: Laufzeit
+          - entity: sensor.radio_schalter_keller_wlan
+            name: Wlan
+          - entity: sensor.radio_schalter_keller_v
+            name: Volt
+          - entity: switch.radio_schalter_keller
+            name: Schalter
+      - type: glance
+        title: Kontakte
+        show_header_toggle: false
+        entities:
+          - entity: binary_sensor.fenster_contact_keller_r
+            name: Fenster Rechts
+          - entity: binary_sensor.fenster_contact_keller_r_alarm
+            name: Fenster Rechts Alarm
+          - entity: binary_sensor.fenster_contact_keller_l
+            name: Fenster Links
+          - entity: binary_sensor.fenster_contact_keller_l_alarm
+            name: Fenster Links Alarm
+
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            title: 'Keller Graph'
+            refresh_interval: 60
+            hours_to_show: 240
+            entities:
+              - sensor.keller_temperatur
+              - sensor.keller_feuchte
+              - sensor.licht_keller_flur_temperatur
+              - sensor.licht_keller_flur_feuchte
+          - type: entities
+            entities:
+              - sensor.keller_temperatur
+              - sensor.keller_feuchte
+              - sensor.licht_keller_flur_temperatur
+              - sensor.licht_keller_flur_feuchte
+      - type: entities
+        title: Nas 2
+        show_header_toggle: false
+        entities:
+          - entity: weblink.wolfgang_da2_web
+            name: Link
+          - switch.wolfgang_da2_wake
+          - sensor.wolfgangda2_cpu_usage
+          - sensor.wolfgangda2_memory_usage
+          - sensor.wolfgangda2_network_up_eth0
+          - sensor.wolfgangda2_network_down_eth0
+          - sensor.wolfgangda2_status
+          - sensor.wolfgangda2_volume_used_volume_1
+          - sensor.wolfgangda2_smart_status_drive_1
+          - sensor.wolfgangda2_volume_used_volume_2
+          - sensor.wolfgangda2_smart_status_drive_2
+      - type: entities
+        title: Nas 3
+        show_header_toggle: false
+        entities:
+          - entity: weblink.nas3_web
+            name: Link
+          - switch.nas3_wake
+      - type: glance
+        title: Licht Keller Flur
+        entities:
+          - entity: weblink.licht_keller_flur_web
+            name: Link
+          - entity: sensor.licht_keller_flur_version
+            name: Version
+          - entity: sensor.licht_keller_flur_lz
+            name: Laufzeit
+          - entity: sensor.licht_keller_flur_wlan
+            name: Wlan
+          - entity: sensor.licht_keller_flur_v
+            name: Volt
+          - entity: light.licht_keller_flur
+            name: Licht
+          - entity: input_number.in_licht_keller_flur
+            name: Zeit
+
+  - title: Aussen
+    id: aussen
+    cards:
+      - type: glance
+        title: Licht LED
+        entities:
+          - entity: weblink.licht_led_web
+            name: Link
+          - entity: sensor.licht_led_version
+            name: Version
+          - entity: sensor.licht_led_lz
+            name: Laufzeit
+          - entity: sensor.licht_led_wlan
+            name: Wlan
+          - entity: sensor.licht_led_v
+            name: Volt
+          - entity: light.licht_led
+            name: Schalter
+
+
+
+  - title: Unten
+    id: unten
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            title: 'Unten Graph'
+            refresh_interval: 60
+            hours_to_show: 240
+            entities:
+              - sensor.kueche_temperatur
+              - sensor.kueche_feuchte
+              - sensor.wohnzimmer_temperatur
+              - sensor.wohnzimmer_feuchte
+              - sensor.vorrat_temperatur
+              - sensor.vorrat_feuchte
+          - type: entities
+            entities:
+              - sensor.kueche_temperatur
+              - sensor.kueche_feuchte
+              - sensor.wohnzimmer_temperatur
+              - sensor.wohnzimmer_feuchte
+              - sensor.vorrat_temperatur
+              - sensor.vorrat_feuchte
+      - type: glance
+        title: Lade Schalter Vorrat
+        entities:
+          - entity: weblink.lade_schalter_vorrat_web
+            name: Link
+          - entity: sensor.lade_schalter_vorrat_version
+            name: Version
+          - entity: sensor.lade_schalter_vorrat_lz
+            name: Laufzeit
+          - entity: sensor.lade_schalter_vorrat_wlan
+            name: Wlan
+          - entity: sensor.lade_schalter_vorrat_v
+            name: Volt
+          - entity: switch.lade_schalter_vorrat
+            name: Schalter
+
+
+
+
+
+
+  - icon: mdi:garage
+    title: Garage
+    id: garage
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            title: 'Garage Graph'
+            refresh_interval: 60
+            hours_to_show: 240
+            entities:
+              - sensor.pow_garage_voltage
+              - sensor.pow_garage_current
+              - sensor.garage_temperatur
+              - sensor.garage_feuchte
+          - type: entities
+            entities:
+              - sensor.pow_garage_voltage
+              - sensor.pow_garage_current
+              - sensor.garage_temperatur
+              - sensor.garage_feuchte
+      - type: glance
+        title: Licht Garage
+        entities:
+          - entity: weblink.licht_garage_web
+            name: Link
+          - entity: sensor.licht_garage_version
+            name: Version
+          - entity: sensor.licht_garage_lz
+            name: Laufzeit
+          - entity: sensor.licht_garage_wlan
+            name: Wlan
+          - entity: sensor.licht_garage_v
+            name: Volt
+          - entity: light.licht_garage
+            name: Licht
+          - entity: input_number.in_licht_garage
+            name: Zeit
+          - entity: binary_sensor.licht_garage_taste
+            name: Bewegung
+      - type: glance
+        title: Pow Garage
+        entities:
+          - entity: weblink.pow_garage_web
+            name: Link
+          - entity: sensor.pow_garage_version
+            name: Version
+          - entity: sensor.pow_garage_lz
+            name: Laufzeit
+          - entity: sensor.pow_garage_wlan
+            name: Wlan
+          - entity: sensor.pow_garage_v
+            name: Volt
+          - entity: switch.pow_garage
+            name: Schalter
+          - entity: sensor.pow_garage_voltage
+            name: Spannung
+          - entity: sensor.pow_garage_current
+            name: Strom
+          - entity:  sensor.pow_garage_power
+            name: Leistung
+          - entity: sensor.pow_garage_factor
+            name: Factor
+          - entity: sensor.pow_garage_today
+            name: Heute
+          - entity: sensor.pow_garage_yesterday
+            name: Gestern
+          - entity: sensor.pow_garage_total
+            name: Gesammt
+            
+            
+  - icon: mdi:food-fork-drink
+    title: Küche
+    id: kueche
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            title: 'Küche Graph'
+            refresh_interval: 60
+            hours_to_show: 240
+            entities:
+              - sensor.kueche_temperatur
+              - sensor.kueche_feuchte
+              - sensor.pow_kaffee_voltage
+              - sensor.pow_kaffee_current
+          - type: entities
+            entities:
+              - sensor.kueche_temperatur
+              - sensor.kueche_feuchte
+              - sensor.pow_kaffee_voltage
+              - sensor.pow_kaffee_current
+      - type: glance
+        title: Radio Schalter
+        show_header_toggle: false
+        entities:
+          - entity: weblink.radio_schalter_kueche_web
+            name: Link
+          - entity: sensor.radio_schalter_kueche_version
+            name: Version
+          - entity: sensor.radio_schalter_kueche_lz
+            name: Laufzeit
+          - entity: sensor.radio_schalter_kueche_wlan
+            name: Wlan
+          - entity: sensor.radio_schalter_kueche_v
+            name: Volt
+          - entity: switch.radio_schalter_kueche
+            name: Schalter
+          - entity: binary_sensor.radio_schalter_kueche_taste
+            name: Taste
+
+      - type: glance
+        title: Pow Kaffee
+        show_header_toggle: false
+        entities:
+          - entity: weblink.pow_kaffee_web
+            name: Link
+          - entity: sensor.pow_kaffee_version
+            name: Version
+          - entity: sensor.pow_kaffee_lz
+            name: Laufzeit
+          - entity:  sensor.pow_kaffee_wlan
+            name: Wlan
+          - entity: sensor.pow_kaffee_v
+            name: Volt
+          - entity: switch.pow_kaffee
+            name: Schalter
+          - entity: sensor.pow_kaffee_voltage
+            name: Spannung
+          - entity: sensor.pow_kaffee_current
+            name: Strom
+          - entity:  sensor.pow_kaffee_power
+            name: Leistung
+          - entity: sensor.pow_kaffee_factor
+            name: Factor
+          - entity: sensor.pow_kaffee_today
+            name: Heute
+          - entity: sensor.pow_kaffee_yesterday
+            name: Gestern
+          - entity: sensor.pow_kaffee_total
+            name: Gesammt
+
+      - type: entities
+        title: Media
+        show_header_toggle: false
+        entities:
+          - entity: binary_sensor.bs_play_mpd
+            name: Musikplayer
+          - entity: switch.sw_mpd_hrs
+            name: Schalter RSH
+          - entity: switch.sw_mpd_einslive
+            name: Schalter 1Live
+          - entity: input_number.in_mpd_kueche
+            name: Lautstärke
+      - type: vertical-stack
+        cards:
+          - type: media-control
+            entity: media_player.pi_media_mpd
+          - type: media-control
+            entity: media_player.snapcast_client_6aec95f148e44614adcf25c2fafed2c0
+      - type: entity-filter
+        entities:
+          - binary_sensor.cook_key_tracker
+          - binary_sensor.piradio_tracker
+        state_filter:
+          - 'off'
+        card:
+          type: entities
+          title: Offline Geräte
+      - type: glance
+        title: Kontakte
+        show_header_toggle: false
+        entities:
+          - entity: binary_sensor.tuer_contact_kueche
+            name: Tür
+          - entity: binary_sensor.tuer_contact_kueche_alarm
+            name: Tür Alarm
+ 
+  - icon: mdi:sofa
+    title: Wohnzimmer
+    id: wohnzimmer
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            title: 'Wohnzimmer Graph'
+            refresh_interval: 60
+            hours_to_show: 240
+            entities:
+              - sensor.wohnzimmer_temperatur
+              - sensor.wohnzimmer_feuchte
+              - sensor.druck
+          - type: entities
+            entities:
+              - sensor.wohnzimmer_temperatur
+              - sensor.wohnzimmer_feuchte
+              - sensor.druck
+      - type: vertical-stack
+        cards:
+          - type: entities
+            title: Fernbedienung
+            show_header_toggle: false
+            entities:
+              - input_select.remote
+          - type: media-control
+            entity: media_player.solo4k
+          - type: media-control
+            entity: media_player.pi_media_kodi
+          - type: media-control
+            entity: media_player.pi_media_mpd
+      - type: vertical-stack
+        cards:
+          - type: entities
+            title: Aquarium
+            show_header_toggle: false
+            entities:
+              - sensor.auto_aquarium_start
+              - sensor.auto_aquarium_stop
+              - input_number.auto_aquarium_offset_on
+              - input_number.auto_light_offset_off
+#              - automation.auto_light_on_enabled
+          - type: glance
+            title: Licht Schalter
+            entities:
+              - entity: weblink.schalter_aquarium_web
+                name: Link
+              - entity: sensor.schalter_aquarium_version
+                name: Version
+              - entity: sensor.schalter_aquarium_lz
+                name: Laufzeit
+              - entity: sensor.schalter_aquarium_wlan
+                name: Wlan
+              - entity: sensor.schalter_aquarium_v 
+                name: Volt
+              - entity: light.schalter_aquarium
+                name: Licht
+      - type: glance
+        title: Kontakte
+        show_header_toggle: false
+        entities:
+          - entity: binary_sensor.fenster_contact_wohnzimmer
+            name: Fenster
+          - entity: binary_sensor.fenster_contact_wohnzimmer_alarm
+            name: Fenster Alarm
+
+      - type: entity-filter
+        entities:
+          - binary_sensor.bs_pi_media 
+          - binary_sensor.piradio_tracker
+          - binary_sensor.bs_vusolo4k
+        state_filter:
+          - 'off'
+        card:
+          type: entities
+          title: Offline Geräte
+ 
+ 
+ 
+ 
+ 
+  - icon: mdi:arrow-up-thick
+    title: Oben
+    id: oben
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            title: 'Oben Graph'
+            refresh_interval: 60
+            hours_to_show: 240
+            entities:
+              - sensor.treppe_speicher_temperatur
+              - sensor.treppe_speicher_feuchte
+          - type: entities
+            entities:
+              - sensor.treppe_speicher_temperatur
+              - sensor.treppe_speicher_feuchte
+      - type: entities
+        title: Drucker
+        show_header_toggle: false
+        entities:
+          - weblink.drucker_web 
+          - entity: sensor.samsung_m267x_287x_series_10101014_drum_black
+            name: Schwarz Trommel
+          - entity: sensor.samsung_m267x_287x_series_10101014_toner_black
+            name: Schwarz Toner
+          - entity: sensor.samsung_m267x_287x_series_10101014_output_tray_0
+            name: Fach 0
+          - entity: sensor.samsung_m267x_287x_series_10101014_tray_1
+            name: Fach 1
+      - type: glance
+        title: Licht Treppe Speicher
+        entities:
+          - entity: weblink.licht_treppe_speicher_web
+            name: Link
+          - entity: sensor.licht_treppe_speicher_version
+            name: Version
+          - entity: sensor.licht_treppe_speicher_lz
+            name: Laufzeit
+          - entity: sensor.licht_treppe_speicher_wlan
+            name: Wlan
+          - entity: sensor.licht_treppe_speicher_v 
+            name: Volt
+          - entity: light.licht_treppe_speicher
+            name: Licht
+          - entity: input_number.in_licht_treppe_speicher
+            name: Zeit
+          - entity: binary_sensor.licht_treppe_speicher_taste
+            name: Bewegung
+           
+            
+            
+            
+           
+  - icon: mdi:paperclip
+    title: Büro
+    id: buero
+    cards:
+      - type: glance
+        title: Pow Buero
+        entities:
+          - entity: weblink.pow_buero_web
+            name: Link
+          - entity: sensor.pow_buero_version
+            name: Version
+          - entity: sensor.pow_buero_lz
+            name: Laufzeit
+          - entity: sensor.pow_buero_wlan
+            name: Wlan
+          - entity: sensor.pow_buero_v 
+            name: Volt
+          - entity: switch.pow_buero
+            name: Schalter
+          - entity: sensor.pow_buero_voltage
+            name: Spannung
+          - entity: sensor.pow_buero_current
+            name: Strom
+          - entity:  sensor.pow_buero_power
+            name: Leistung
+          - entity: sensor.pow_buero_factor
+            name: Factor
+          - entity: sensor.pow_buero_today
+            name: Heute
+          - entity: sensor.pow_buero_yesterday
+            name: Gestern
+          - entity: sensor.pow_buero_total
+            name: Gesammt
+      - type: glance
+        title: Rollladen Buero
+        entities:
+          - entity: weblink.rollladen_buero_web
+            name: Link
+          - entity: sensor.rollladen_buero_version
+            name: Version
+          - entity: sensor.rollladen_buero_lz
+            name: Laufzeit
+          - entity: sensor.rollladen_buero_wlan
+            name: Wlan
+          - entity: sensor.rollladen_buero_v 
+            name: Volt
+          - entity: cover.rollladen_buero
+            name: Rolllade
+          - entity: timer.rollladen_buero_auf
+            name: Zeit Auf
+          - entity:  timer.rollladen_buero_zu
+            name: Zeit Zu
+          - entity: sensor.rollladen_buero_t1
+            name: Schalter T1
+          - entity: sensor.rollladen_buero_t2
+            name: Schalter T2
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            title: 'Büro Graph'
+            refresh_interval: 60
+            hours_to_show: 240
+            entities:
+              - sensor.pow_buero_voltage
+              - sensor.pow_buero_current
+          - type: entities
+            entities:
+              - sensor.pow_buero_voltage
+              - sensor.pow_buero_current
+              
+              
+              
+              
+              
+  - icon: mdi:sleep
+    title: Schlafzimmer
+    id: schlafzimmer
+    cards:
+      - type: glance
+        title: Rollladen Schlafzimmer
+        entities:
+          - entity: weblink.rollladen_schlafzimmer_web
+            name: Link
+          - entity: sensor.rollladen_schlafzimmer_version
+            name: Version
+          - entity: sensor.rollladen_schlafzimmer_lz
+            name: Laufzeit
+          - entity: sensor.rollladen_schlafzimmer_wlan
+            name: Wlan
+          - entity: sensor.rollladen_schlafzimmer_v
+            name: Volt
+          - entity: cover.rollladen_schlafzimmer
+            name: Rolllade
+          - entity: timer.rollladen_schlafzimmer_auf
+            name: Zeit Auf
+          - entity:  timer.rollladen_schlafzimmer_zu
+            name: Zeit Zu
+          - entity: sensor.rollladen_schlafzimmer_t1
+            name: Schalter T1
+          - entity: sensor.rollladen_schlafzimmer_t2
+            name: Schalter T2
+
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            title: 'Schlafzimmer Graph'
+            refresh_interval: 60
+            hours_to_show: 240
+            entities:
+              - sensor.schlafzimmer_temperatur
+              - sensor.schlafzimmer_feuchte
+          - type: entities
+            entities:
+              - sensor.schlafzimmer_temperatur
+              - sensor.schlafzimmer_feuchte
+           
+      - type: glance
+        title: Sensor
+        entities:
+          - entity: weblink.sensor_schlafzimmer_web
+            name: Link
+          - entity: sensor.sensor_schlafzimmer_version
+            name: Version
+          - entity: sensor.sensor_schlafzimmer_lz
+            name: Laufzeit
+          - entity: sensor.sensor_schlafzimmer_wlan
+            name: Wlan
+          - entity: sensor.sensor_schlafzimmer_v
+            name: Volt
+           
+            
+  - icon: mdi:cursor-pointer
+    title: Speicher
+    id: speicher
+    cards:
+      - type: glance
+        title: Speicher Schalter
+        entities:
+          - entity: weblink.speicher_schalter_basteln_web
+            name: Link
+          - entity: sensor.speicher_schalter_basteln_version
+            name: Version
+          - entity: sensor.speicher_schalter_basteln_lz
+            name: Laufzeit
+          - entity: sensor.speicher_schalter_basteln_wlan
+            name: Wlan
+          - entity: sensor.speicher_schalter_basteln_v
+            name: Volt
+          - entity: switch.speicher_schalter_basteln
+            name: Schalter
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            title: 'Speicher Graph'
+            refresh_interval: 60
+            hours_to_show: 240
+            entities:
+              - sensor.speicher_temperatur
+              - sensor.speicher_feuchte
+          - type: entities
+            entities:
+              - sensor.speicher_temperatur
+              - sensor.speicher_feuchte
+
+      - type: picture-elements
+        image: /local/speicher.jpg
+        elements:
+          - type: state-icon
+            tap_action: toggle
+            entity: switch.speicher_schalter_basteln
+            style:
+              top: 47%
+              left: 42%
+              
+              
+              
+              
+  - icon: mdi:home-assistant
+    # Title of the view. Will be used as the tooltip for tab icon
+    title: Home Assistant
+    cards:
+      - type: glance
+        title: Home Assistant Info
+        show_header_toggle: false
+        # The entities here will be shown in the same order as specified.
+        # Each entry is an entity ID or a map with extra options.
+        entities:
+          - entity: sensor.hass_uptime
+            name: Laufzeit
+          - entity: sensor.ha_version
+            name: Aktuelle Version
+          - entity: sensor.installed_version
+            name: Version
+          - entity: input_select.log_level
+            name: Log Level
+          - sensor.ha_github_version
+          - sensor.ha_pypi_version
+      - type: glance
+        title: Speedtest
+        show_header_toggle: false
+        entities:
+#          - entity: sensor.speedtest_download
+#            name: Download
+#          - entity: sensor.speedtest_upload
+#            name: Upload
+          - entity: sensor.speedtest_ping
+            name: Ping
+      - type: glance
+        title: Ha Server 
+        show_header_toggle: false
+        entities:
+          - entity:  sensor.processor_use
+            name: CPU Auslastung
+          - entity: sensor.load_15m
+            name: Load (15m)
+          - entity: sensor.disk_free_home
+            name: Disk free /home
+          - entity: sensor.disk_use_percent_home
+            name: Disk use (%) /home
+          - entity: sensor.disk_use_home
+            name: Disk use /home
+          - entity: sensor.memory_free
+            name: Freier RAM
+          - entity: sensor.memory_use
+            name: Memory use
+          - entity: sensor.memory_use_percent
+            name: Memory use %
+          - entity: sensor.swap_free
+            name: Swap free
+          - entity:  sensor.swap_use
+            name: Swap use
+          - entity: sensor.swap_use_percent
+            name: Swap use (%)
+          - entity: sensor.network_in_eth0
+            name: Empfangen
+          - entity: sensor.network_out_eth0
+            name: Gesendet
+          - entity: sensor.packets_in_eth0
+            name: P Empfangen
+          - entity: sensor.packets_out_eth0
+            name: P Gesendet
+          - entity: sensor.ipv4_address_eth0
+            name: IP
+          - entity: sensor.last_boot
+            name: Letzer Neustart
+          - entity: sensor.since_last_boot
+            name: Since last boot
+          - entity: input_number.cpu_alert_value
+            name: HA CPU Alert Setpoint
+          - entity: input_number.disk_alert_value
+            name: HA Disk Alert Setpoint
+          - entity: input_number.ram_alert_value
+            name: HA Ram Alert Setpoint
+ 
+
+
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            title: 'Daten Fritzbox'
+            refresh_interval: 120
+            hours_to_show: 48
+            entities:
+              - sensor.fritz_transmission_down_speed
+              - sensor.fritz_transmission_up_speed
+          - type: entities
+            entities:
+              - entity: weblink.fritz_box
+                name: Link
+              - sensor.fritz_transmission_down_speed
+              - sensor.fritz_transmission_up_speed
+              - sensor.fritz_max_down_speed
+              - sensor.fritz_max_up_speed
+              - sensor.fritz_received
+              - sensor.fritz_send
+              - sensor.fritz_netmonitor
+              - sensor.s_fritz_callmonitor
+              - binary_sensor.bs_fritz_repeater
+              - binary_sensor.bs_fritz_box_7390
+
+          
+      - type: glance
+        title: Speicher Schalter
+        entities:
+          - entity: weblink.speicher_schalter_basteln_web
+            name: Link
+          - entity: sensor.speicher_schalter_basteln_version
+            name: Version
+          - entity: sensor.speicher_schalter_basteln_lz
+            name: Laufzeit
+          - entity: sensor.speicher_schalter_basteln_wlan
+            name: Wlan
+          - entity: sensor.speicher_schalter_basteln_ssid
+            name: Router
+          - entity: switch.speicher_schalter_basteln
+            name: Schalter
+      - type: glance
+        title: Licht Treppe Speicher
+        entities:
+          - entity: weblink.licht_treppe_speicher_web
+            name: Link
+          - entity: sensor.licht_treppe_speicher_version
+            name: Version
+          - entity: sensor.licht_treppe_speicher_lz
+            name: Laufzeit
+          - entity: sensor.licht_treppe_speicher_wlan
+            name: Wlan
+          - entity: sensor.licht_treppe_speicher_ssid
+            name: Router
+          - entity: light.licht_treppe_speicher
+            name: Licht
+            
+      - type: glance
+        title: Pow Buero
+        entities:
+          - entity: weblink.pow_buero_web
+            name: Link
+          - entity: sensor.pow_buero_version
+            name: Version
+          - entity: sensor.pow_buero_lz
+            name: Laufzeit
+          - entity: sensor.pow_buero_wlan
+            name: Wlan
+          - entity: sensor.pow_buero_ssid
+            name: Router
+          - entity: switch.pow_buero
+            name: Schalter
+
+      - type: glance
+        title: Rollladen Buero
+        entities:
+          - entity: weblink.rollladen_buero_web
+            name: Link
+          - entity: sensor.rollladen_buero_version
+            name: Version
+          - entity: sensor.rollladen_buero_lz
+            name: Laufzeit
+          - entity: sensor.rollladen_buero_wlan
+            name: Wlan
+          - entity: sensor.rollladen_buero_ssid
+            name: Router
+          - entity: cover.rollladen_buero
+            name: Rolllade
+
+      - type: glance
+        title: Rollladen Schlafzimmer
+        entities:
+          - entity: weblink.rollladen_schlafzimmer_web
+            name: Link
+          - entity: sensor.rollladen_schlafzimmer_version
+            name: Version
+          - entity: sensor.rollladen_schlafzimmer_lz
+            name: Laufzeit
+          - entity: sensor.rollladen_schlafzimmer_wlan
+            name: Wlan
+          - entity: sensor.rollladen_schlafzimmer_ssid
+            name: Router
+          - entity: cover.rollladen_schlafzimmer
+            name: Rolllade
+            
+      - type: glance
+        title: Licht Aquarium
+        entities:
+          - entity: weblink.schalter_aquarium_web
+            name: Link
+          - entity: sensor.schalter_aquarium_version
+            name: Version
+          - entity: sensor.schalter_aquarium_lz
+            name: Laufzeit
+          - entity: sensor.schalter_aquarium_wlan
+            name: Wlan
+          - entity: sensor.schalter_aquarium_ssid
+            name: Router
+          - entity: light.schalter_aquarium
+            name: Licht
+      - type: glance
+        title: Radio Schalter Kueche
+        entities:
+          - entity: weblink.radio_schalter_kueche_web
+            name: Link
+          - entity: sensor.radio_schalter_kueche_version
+            name: Version
+          - entity: sensor.radio_schalter_kueche_lz
+            name: Laufzeit
+          - entity: sensor.radio_schalter_kueche_wlan
+            name: Wlan
+          - entity: sensor.radio_schalter_kueche_ssid
+            name: Router
+          - entity: switch.radio_schalter_kueche
+            name: Schalter
+      - type: glance
+        title: Pow Kaffee
+        entities:
+          - entity: weblink.pow_kaffee_web
+            name: Link
+          - entity: sensor.pow_kaffee_version
+            name: Version
+          - entity: sensor.pow_kaffee_lz
+            name: Laufzeit
+          - entity: sensor.pow_kaffee_wlan
+            name: Wlan
+          - entity: sensor.pow_kaffee_ssid
+            name: Router
+          - entity: switch.pow_kaffee
+            name: Schalter
+      - type: glance
+        title: Lade Schalter Vorrat
+        entities:
+          - entity: weblink.lade_schalter_vorrat_web
+            name: Link
+          - entity: sensor.lade_schalter_vorrat_version
+            name: Version
+          - entity: sensor.lade_schalter_vorrat_lz
+            name: Laufzeit
+          - entity: sensor.lade_schalter_vorrat_wlan
+            name: Wlan
+          - entity: sensor.lade_schalter_vorrat_ssid
+            name: Router
+          - entity: switch.lade_schalter_vorrat
+            name: Schalter
+            
+      - type: glance
+        title: Licht Keller Flur
+        entities:
+          - entity: weblink.licht_keller_flur_web
+            name: Link
+          - entity: sensor.licht_keller_flur_version
+            name: Version
+          - entity: sensor.licht_keller_flur_lz
+            name: Laufzeit
+          - entity: sensor.licht_keller_flur_wlan
+            name: Wlan
+          - entity: sensor.licht_keller_flur_ssid
+            name: Router
+          - entity: light.licht_keller_flur
+            name: Licht
+      - type: glance
+        title: Radio Schalter Keller
+        entities:
+          - entity: weblink.radio_schalter_keller_web
+            name: Link
+          - entity: sensor.radio_schalter_keller_version
+            name: Version
+          - entity: sensor.radio_schalter_keller_lz
+            name: Laufzeit
+          - entity: sensor.radio_schalter_keller_wlan
+            name: Wlan
+          - entity: sensor.radio_schalter_keller_ssid
+            name: Router
+          - entity: switch.radio_schalter_keller
+            name: Schalter
+      - type: glance
+        title: Pow Garage
+        entities:
+          - entity: weblink.pow_garage_web
+            name: Link
+          - entity: sensor.pow_garage_version
+            name: Version
+          - entity: sensor.pow_garage_lz
+            name: Laufzeit
+          - entity: sensor.pow_garage_wlan
+            name: Wlan
+          - entity: sensor.pow_garage_ssid
+            name: Router
+          - entity: switch.pow_garage
+            name: Schalter
+      - type: glance
+        title: Licht Garage
+        entities:
+          - entity: weblink.licht_garage_web
+            name: Link
+          - entity: sensor.licht_garage_version
+            name: Version
+          - entity: sensor.licht_garage_lz
+            name: Laufzeit
+          - entity: sensor.licht_garage_wlan
+            name: Wlan
+          - entity: sensor.licht_garage_ssid
+            name: Router
+          - entity: light.licht_garage
+            name: Licht
+      - type: glance
+        title: Licht Terasse
+        entities:
+          - entity: weblink.licht_led_web
+            name: Link
+          - entity: sensor.licht_led_version
+            name: Version
+          - entity: sensor.licht_led_lz
+            name: Laufzeit
+          - entity: sensor.licht_led_wlan
+            name: Wlan
+          - entity: sensor.licht_led_ssid
+            name: Router
+          - entity: light.licht_led
+            name: Licht
+      - type: glance
+        title: Sensor Schlafzimmer
+        entities:
+          - entity: weblink.sensor_schlafzimmer_web
+            name: Link
+          - entity: sensor.sensor_schlafzimmer_version
+            name: Version
+          - entity: sensor.sensor_schlafzimmer_lz
+            name: Laufzeit
+          - entity: sensor.sensor_schlafzimmer_wlan
+            name: Wlan
+          - entity: sensor.sensor_schlafzimmer_ssid
+            name: Router
+      - type: glance
+        title: RF Bridge
+        entities:
+          - entity: weblink.rf_bridge_web
+            name: Link
+          - entity: sensor.rf_bridge_version
+            name: Version
+          - entity: sensor.rf_bridge_lz
+            name: Laufzeit
+          - entity: sensor.rf_bridge_wlan
+            name: Wlan
+          - entity: sensor.rf_bridge_ssid
+            name: Router
+          - entity: binary_sensor.rf_bridge_lwt
+            name: Gateway
+
+
+  - icon: mdi:chart-line
+    title: Sensoren
+    id: sensoren
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            title: 'Temperatur'
+            refresh_interval: 60
+            hours_to_show: 120
+            entities:
+              - sensor.speicher_temperatur
+              - sensor.treppe_speicher_temperatur
+              - sensor.schlafzimmer_temperatur
+              - sensor.wohnzimmer_temperatur
+              - sensor.kueche_temperatur
+              - sensor.garage_temperatur
+              - sensor.keller_temperatur
+              - sensor.licht_keller_flur_temperatur
+              - sensor.temperatur_minmax
+              - sensor.temperatur_nebenraume_minmax
+          - type: glance
+            entities:
+            - entity: sensor.speicher_temperatur
+              name: Speicher
+            - entity: sensor.treppe_speicher_temperatur
+              name: Treppe Speicher
+            - entity: sensor.schlafzimmer_temperatur
+              name: Schlafzimmer
+            - entity: sensor.wohnzimmer_temperatur
+              name: Wohnzimmer
+            - entity: sensor.kueche_temperatur
+              name: Küche
+            - entity: sensor.garage_temperatur
+              name: Garage
+            - entity: sensor.keller_temperatur
+              name: Keller
+            - entity: sensor.licht_keller_flur_temperatur
+              name: Keller Flur
+            - entity: sensor.temperatur_minmax
+              name: MinMax
+            - entity: sensor.temperatur_nebenraume_minmax
+              name: MinMax neben
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            title: 'Feuchte'
+            refresh_interval: 60
+            hours_to_show: 120
+            entities:
+              - sensor.speicher_feuchte
+              - sensor.treppe_speicher_feuchte
+              - sensor.schlafzimmer_feuchte
+              - sensor.wohnzimmer_feuchte
+              - sensor.kueche_feuchte
+              - sensor.garage_feuchte
+              - sensor.keller_feuchte
+              - sensor.licht_keller_flur_feuchte
+              - sensor.feuchte_minmax
+              - sensor.feuchte_nebenraume_minmax
+          - type: glance
+            entities:
+            - entity: sensor.speicher_feuchte
+              name: Speicher
+            - entity: sensor.treppe_speicher_feuchte
+              name: Treppe Speicher
+            - entity: sensor.treppe_speicher_feuchte
+              name: Schlafzimmer
+            - entity: sensor.schlafzimmer_feuchte
+              name: Wohnzimmer
+            - entity: sensor.kueche_feuchte
+              name: Küche
+            - entity: sensor.garage_feuchte
+              name: Garage
+            - entity: sensor.keller_feuchte
+              name: Keller
+            - entity: sensor.licht_keller_flur_feuchte
+              name: Keller Flur
+            - entity: sensor.feuchte_minmax
+              name: MinMax
+            - entity: sensor.feuchte_nebenraume_minmax
+              name: MinMax neben
+            
+  - icon: mdi:access-point
+    title: RF Bridge
+    id: rfbridge
+    cards:
+      - type: entities
+        title: RF Bridge Buero
+        entities:
+          - entity: weblink.rf_bridge_web
+            name: Link
+          - entity: sensor.rf_bridge_result
+            name: letzter Wert
+          - entity: binary_sensor.rf_bridge_lwt
+            name: Gateway
+          - entity:  sensor.rf_bridge_wlan
+            name: Wlan
+          - entity: sensor.rf_bridge_ssid
+            name: Router
+          - entity: sensor.rf_bridge_v
+            name: Volt
+          - entity: sensor.rf_bridge_lz
+            name: Laufzeit
+
+  - title: Test Sensor
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            title: 'Feuchte'
+            refresh_interval: 6
+            hours_to_show: 2
+            entities:
+              - sensor.garage_feuchte
+              - sensor.keller_feuchte
+          - type: glance
+            entities:
+            - entity: sensor.garage_feuchte
+              name: Bezug
+            - sensor.keller_feuchte  
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            title: 'Temperatur'
+            refresh_interval: 6
+            hours_to_show: 2
+            entities:
+              - sensor.garage_temperatur
+              - sensor.keller_temperatur
+          - type: glance
+            entities:
+            - entity: sensor.garage_temperatur
+              name: Bezug
+            - sensor.keller_temperatur  
+
+  - title: Update
+    id: update
+    cards:
+      - type: glance
+        title: Sonoff
+        column_width: 30px 
+        entities:
+          - entity: weblink.rf_bridge_web
+            name: Link
+          - entity: sensor.rf_bridge_version
+            name: Version
+          - entity: binary_sensor.rf_bridge_lwt
+            name: LWT
+   
+          - entity: weblink.sensor_schlafzimmer_web
+            name: Link
+          - entity: sensor.sensor_schlafzimmer_version
+            name: Version
+          - entity: binary_sensor.sensor_schlafzimmer_lwt
+            name: LWT
+  

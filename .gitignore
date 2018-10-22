@@ -2,6 +2,7 @@
 !*.yaml
 !scenes
 !packages
+!lovelace
 !custom_components
 !media_player
 !.gitignore
@@ -11,3 +12,4 @@ known_devices.yaml
 !enigma.py
 !emulated_roku.py
 !varible.py
+!node-red

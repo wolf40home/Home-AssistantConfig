@@ -1,0 +1,91 @@
+title: Wolfgangs und Barbaras Home
+# Optional background for all views. Check https://developer.mozilla.org/en-US/docs/Web/CSS/background for more examples.
+background: center / cover no-repeat url("/background.png") fixed
+# Exclude entities from "Unused entities" view
+excluded_entities:
+  !include excluded_entities.yaml
+  {% for state in states.automation -%}
+  - {{ state.entity_id }}
+  {% endfor %}
+
+views: 
+    # View tab title.
+  - icon: mdi:home
+    title: Home
+    # Optional unique id for direct access /lovelace/${id}
+    id: home
+    # Optional background (overwrites the global background).
+    background: radial-gradient(crimson, skyblue)
+    # Each view can have a different theme applied. Theme should be defined in the frontend.
+    theme: dark-mode
+    # The cards to show on this view.
+    cards:
+      !include home.yaml
+  - icon: mdi:stairs
+    title: Keller
+    id: keller
+    cards:
+      !include keller.yaml
+  - title: Aussen
+    id: aussen
+    cards:
+      !include aussen.yaml
+  - title: Unten
+    id: unten
+    cards:
+      !include unten.yaml
+  - icon: mdi:garage
+    title: Garage
+    id: garage
+    cards:
+      !include garage.yaml
+  - icon: mdi:food-fork-drink
+    title: Küche
+    id: kueche
+    cards:
+      !include kueche.yaml
+  - icon: mdi:sofa
+    title: Wohnzimmer
+    id: wohnzimmer
+    cards:
+      !include wohnzimmer.yaml
+  - icon: mdi:arrow-up-thick
+    title: Oben
+    id: oben
+    cards:
+      !include oben.yaml
+  - icon: mdi:paperclip
+    title: Büro
+    id: buero
+    cards:
+      !include buero.yaml
+  - icon: mdi:sleep
+    title: Schlafzimmer
+    id: schlafzimmer
+    cards:
+      !include schlafzimmer.yaml
+  - icon: mdi:cursor-pointer
+    title: Speicher
+    id: speicher
+    cards:
+      !include speicher.yaml
+  - icon: mdi:home-assistant
+    # Title of the view. Will be used as the tooltip for tab icon
+    title: Home Assistant
+    id: ha
+    cards:
+      !include ha.yaml
+  - icon: mdi:chart-line
+    title: Sensoren
+    id: sensoren
+    cards:
+      !include sensoren.yaml
+  - icon: mdi:access-point
+    title: RF Bridge
+    id: rfbridge
+    cards:
+      !include rfbridge.yaml
+  - title: Test Sensor
+    id: tsensor
+    cards:
+      !include tsensor.yaml

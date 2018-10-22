@@ -19,7 +19,6 @@ exclude:
     - sensor.disk_used_
     - sensor.cpu_used
     - sensor.average_load_1m
-    - binary_sensor.zzztuer_contact_kueche
     - sensor.rf_bridge_lz
     - sensor.speicher_schalter_basteln_lz
     - sensor.licht_treppe_speicher_lz
@@ -36,11 +35,3 @@ exclude:
     - sensor.licht_garage_lz
     - sensor.licht_led_lz
     - automation.sonoff_tele
-    - binary_sensor.zzzfenster_contact_keller_l
-    - binary_sensor.zzzfenster_contact_keller_r
-    - binary_sensor.zzzfenster_contact_kueche   
-    - binary_sensor.zzzfenster_contact_treppe   
-    - binary_sensor.zzzfenster_contact_wohnzimmer   
-    - binary_sensor.zzztuer_contact_kueche   
-    - binary_sensor.zzzfenster_contact_wc   
-    - binary_sensor.zzzfenster_contact_vorrat

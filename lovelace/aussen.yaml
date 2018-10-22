@@ -1,0 +1,15 @@
+      - type: glance
+        title: Licht LED
+        entities:
+          - entity: weblink.licht_led_web
+            name: Link
+          - entity: sensor.licht_led_version
+            name: Version
+          - entity: sensor.licht_led_lz
+            name: Laufzeit
+          - entity: sensor.licht_led_wlan
+            name: Wlan
+          - entity: sensor.licht_led_v
+            name: Volt
+          - entity: light.licht_led
+            name: Schalter

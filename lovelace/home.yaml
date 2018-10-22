@@ -1,0 +1,91 @@
+      - type: vertical-stack
+        cards:
+          - type: weather-forecast
+            entity: weather.openweathermap
+          - type: entities
+            entities:
+            - sun.sun
+            - sensor.mond
+            - sensor.druck
+            - input_boolean.boolean_urlaub
+      - type: entities
+        title: Radio
+        show_header_toggle: false
+        entities:
+          - binary_sensor.bs_play_mpd
+          - switch.sw_mpd_hrs
+          - switch.sw_mpd_einslive
+          - input_number.in_mpd_volume
+          - input_number.in_mpd_kueche
+          - input_number.in_mpd_wohn
+          - media_player.pi_media_mpd
+      - type: picture-entity
+        entity: camera.borkum
+      - type: picture-entity
+        entity: camera.borkum_wetter
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            title: 'Luftdaten Nievenheim'
+            refresh_interval: 60
+            hours_to_show: 240
+            entities:
+              - sensor.luftdaten_pm10
+              - sensor.luftdaten_pm25
+          - type: entities
+            entities:
+              - sensor.luftdaten_pm10
+              - sensor.luftdaten_pm25
+      - type: vertical-stack
+        cards:
+           - type: history-graph
+             title: 'Wetter'
+             refresh_interval: 60
+             hours_to_show: 240
+             entities:
+               - sensor.s_weather_wind_speed
+               - sensor.s_weather_temperature
+               - sensor.s_weather_dewpoint_temperature
+               - sensor.s_weather_pressure
+               - sensor.s_weather_humidity
+           - type: entities
+             entities:
+               - sensor.s_weather_wind_speed
+               - sensor.s_weather_temperature
+               - sensor.s_weather_dewpoint_temperature
+               - sensor.s_weather_pressure
+               - sensor.s_weather_humidity
+      - type: entity-filter
+        entities:
+          - binary_sensor.bs_fritz_box_7390 
+          - binary_sensor.bs_fritz_repeater
+          - binary_sensor.cook_key_tracker
+          - binary_sensor.dm500plus_tracker
+          - binary_sensor.drucker_tracker
+          - binary_sensor.fritz_box_7590_tracker
+          - binary_sensor.nas3_tracker
+          - binary_sensor.piradio2_tracker
+          - binary_sensor.piradio_tracker
+          - binary_sensor.wolfgang_da2_tracker
+          - binary_sensor.wolfgang_pc_tracker
+        state_filter:
+          - 'off'
+        card:
+        title: People at home
+      - type: entity-filter
+        entities:
+          - device_tracker.amazoncdea109b9 
+          - device_tracker.barbarasipad
+          
+          
+        state_filter:
+          - 'off'
+              
+
+        # The picture entity card will represent an entity with a picture
+      - type: picture-entity
+        image: https://www.home-assistant.io/images/default-social.png
+        entity: input_select.theme_select
+
+    # Specify a tab icon if you want the view tab to be an icon.
+

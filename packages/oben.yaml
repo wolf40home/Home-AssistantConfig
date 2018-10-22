@@ -56,7 +56,7 @@ sensor:
     name: s_fritz_callmonitor
     host: 10.10.0.1
     username: !secret fritz_user2
-    password: !secret fritz_user2_pw
+    password: !secret normal_password
     phonebook: 0
     prefixes:
       - !secret fritz_de

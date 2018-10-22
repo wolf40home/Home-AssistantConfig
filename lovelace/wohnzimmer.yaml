@@ -1,0 +1,76 @@
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            title: 'Wohnzimmer Graph'
+            refresh_interval: 60
+            hours_to_show: 240
+            entities:
+              - sensor.wohnzimmer_temperatur
+              - sensor.wohnzimmer_feuchte
+              - sensor.druck
+          - type: entities
+            entities:
+              - sensor.wohnzimmer_temperatur
+              - sensor.wohnzimmer_feuchte
+              - sensor.druck
+      - type: vertical-stack
+        cards:
+          - type: entities
+            title: Fernbedienung
+            show_header_toggle: false
+            entities:
+              - input_select.remote
+          - type: media-control
+            entity: media_player.solo4k
+          - type: media-control
+            entity: media_player.pi_media_kodi
+          - type: media-control
+            entity: media_player.pi_media_mpd
+      - type: vertical-stack
+        cards:
+          - type: entities
+            title: Aquarium
+            show_header_toggle: false
+            entities:
+              - sensor.auto_aquarium_start
+              - sensor.auto_aquarium_stop
+              - input_number.auto_aquarium_offset_on
+              - input_number.auto_light_offset_off
+#              - automation.auto_light_on_enabled
+          - type: glance
+            title: Licht Schalter
+            entities:
+              - entity: weblink.schalter_aquarium_web
+                name: Link
+              - entity: sensor.schalter_aquarium_version
+                name: Version
+              - entity: sensor.schalter_aquarium_lz
+                name: Laufzeit
+              - entity: sensor.schalter_aquarium_wlan
+                name: Wlan
+              - entity: sensor.schalter_aquarium_v 
+                name: Volt
+              - entity: light.schalter_aquarium
+                name: Licht
+      - type: glance
+        title: Kontakte
+        show_header_toggle: false
+        entities:
+          - entity: binary_sensor.fenster_contact_wohnzimmer
+            name: Fenster
+          - entity: binary_sensor.fenster_contact_wohnzimmer_alarm
+            name: Fenster Alarm
+
+      - type: glance
+        title: Tracker
+        entities:
+          - device_tracker.win10
+          - device_tracker.ipadvonbarbara
+          - device_tracker.barbarasipad
+          - device_tracker.vusolo4k
+          - device_tracker.harmonyhub
+      - type: entities
+        title: Link
+        show_header_toggle: false
+        entities:
+          - weblink.asus_rtac88u 

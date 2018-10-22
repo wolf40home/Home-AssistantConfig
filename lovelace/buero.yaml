@@ -1,0 +1,77 @@
+      - type: glance
+        title: Pow
+        entities:
+          - entity: weblink.pow_buero_web
+            name: Link
+          - entity: sensor.pow_buero_version
+            name: Version
+          - entity: sensor.pow_buero_lz
+            name: Laufzeit
+          - entity: sensor.pow_buero_wlan
+            name: Wlan
+          - entity: sensor.pow_buero_v 
+            name: Volt
+          - entity: switch.pow_buero
+            name: Schalter
+          - entity: sensor.pow_buero_voltage
+            name: Spannung
+          - entity: sensor.pow_buero_current
+            name: Strom
+          - entity:  sensor.pow_buero_power
+            name: Leistung
+          - entity: sensor.pow_buero_factor
+            name: Factor
+          - entity: sensor.pow_buero_today
+            name: Heute
+          - entity: sensor.pow_buero_yesterday
+            name: Gestern
+          - entity: sensor.pow_buero_total
+            name: Gesammt
+      - type: glance
+        title: Rollladen
+        entities:
+          - entity: weblink.rollladen_buero_web
+            name: Link
+          - entity: sensor.rollladen_buero_version
+            name: Version
+          - entity: sensor.rollladen_buero_lz
+            name: Laufzeit
+          - entity: sensor.rollladen_buero_wlan
+            name: Wlan
+          - entity: sensor.rollladen_buero_v 
+            name: Volt
+          - entity: cover.rollladen_buero
+            name: Rolllade
+          - entity: timer.rollladen_buero_auf
+            name: Zeit Auf
+          - entity:  timer.rollladen_buero_zu
+            name: Zeit Zu
+          - entity: sensor.rollladen_buero_t1
+            name: Schalter T1
+          - entity: sensor.rollladen_buero_t2
+            name: Schalter T2
+      - type: glance
+        title: Tracker
+        entities:
+          - device_tracker.wolfgangpc
+          - device_tracker.ipad
+          - device_tracker.wolfgangss6
+          - binary_sensor.rf434
+          - device_tracker.swbuero
+          - device_tracker.w7der03852l
+          - device_tracker.wtdelvse044110l
+        
+        
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            title: 'Büro Graph'
+            refresh_interval: 60
+            hours_to_show: 240
+            entities:
+              - sensor.pow_buero_voltage
+              - sensor.pow_buero_current
+          - type: entities
+            entities:
+              - sensor.pow_buero_voltage
+              - sensor.pow_buero_current

@@ -1,0 +1,38 @@
+      - type: glance
+        title: Speicher Schalter
+        entities:
+          - entity: weblink.speicher_schalter_basteln_web
+            name: Link
+          - entity: sensor.speicher_schalter_basteln_version
+            name: Version
+          - entity: sensor.speicher_schalter_basteln_lz
+            name: Laufzeit
+          - entity: sensor.speicher_schalter_basteln_wlan
+            name: Wlan
+          - entity: sensor.speicher_schalter_basteln_v
+            name: Volt
+          - entity: switch.speicher_schalter_basteln
+            name: Schalter
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            title: 'Speicher Graph'
+            refresh_interval: 60
+            hours_to_show: 240
+            entities:
+              - sensor.speicher_temperatur
+              - sensor.speicher_feuchte
+          - type: entities
+            entities:
+              - sensor.speicher_temperatur
+              - sensor.speicher_feuchte
+
+      - type: picture-elements
+        image: /local/speicher.jpg
+        elements:
+          - type: state-icon
+            tap_action: toggle
+            entity: switch.speicher_schalter_basteln
+            style:
+              top: 47%
+              left: 42%

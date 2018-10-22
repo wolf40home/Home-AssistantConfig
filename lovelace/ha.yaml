@@ -1,0 +1,343 @@
+      - type: glance
+        title: Home Assistant Info
+        show_header_toggle: false
+        # The entities here will be shown in the same order as specified.
+        # Each entry is an entity ID or a map with extra options.
+        entities:
+          - entity: sensor.hass_uptime
+            name: Laufzeit
+          - entity: sensor.ha_version
+            name: Aktuelle Version
+          - entity: sensor.installed_version
+            name: Version
+          - entity: input_select.log_level
+            name: Log Level
+          - sensor.ha_github_version
+          - sensor.ha_pypi_version
+      - type: glance
+        title: Speedtest
+        show_header_toggle: false
+        entities:
+#          - entity: sensor.speedtest_download
+#            name: Download
+#          - entity: sensor.speedtest_upload
+#            name: Upload
+          - entity: sensor.speedtest_ping
+            name: Ping
+      - type: glance
+        title: Ha Server 
+        show_header_toggle: false
+        entities:
+          - entity:  sensor.processor_use
+            name: CPU Auslastung
+          - entity: sensor.load_15m
+            name: Load (15m)
+          - entity: sensor.disk_free_home
+            name: Disk free /home
+          - entity: sensor.disk_use_percent_home
+            name: Disk use (%) /home
+          - entity: sensor.disk_use_home
+            name: Disk use /home
+          - entity: sensor.memory_free
+            name: Freier RAM
+          - entity: sensor.memory_use
+            name: Memory use
+          - entity: sensor.memory_use_percent
+            name: Memory use %
+          - entity: sensor.swap_free
+            name: Swap free
+          - entity:  sensor.swap_use
+            name: Swap use
+          - entity: sensor.swap_use_percent
+            name: Swap use (%)
+          - entity: sensor.network_in_eth0
+            name: Empfangen
+          - entity: sensor.network_out_eth0
+            name: Gesendet
+          - entity: sensor.packets_in_eth0
+            name: P Empfangen
+          - entity: sensor.packets_out_eth0
+            name: P Gesendet
+          - entity: sensor.ipv4_address_eth0
+            name: IP
+          - entity: sensor.last_boot
+            name: Letzer Neustart
+          - entity: sensor.since_last_boot
+            name: Since last boot
+          - entity: input_number.cpu_alert_value
+            name: HA CPU Alert Setpoint
+          - entity: input_number.disk_alert_value
+            name: HA Disk Alert Setpoint
+          - entity: input_number.ram_alert_value
+            name: HA Ram Alert Setpoint
+ 
+
+
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            title: 'Daten Fritzbox'
+            refresh_interval: 120
+            hours_to_show: 48
+            entities:
+              - sensor.fritz_transmission_down_speed
+              - sensor.fritz_transmission_up_speed
+          - type: entities
+            entities:
+              - entity: weblink.fritz_box
+                name: Link
+              - sensor.fritz_transmission_down_speed
+              - sensor.fritz_transmission_up_speed
+              - sensor.fritz_max_down_speed
+              - sensor.fritz_max_up_speed
+              - sensor.fritz_received
+              - sensor.fritz_send
+              - sensor.fritz_netmonitor
+              - sensor.s_fritz_callmonitor
+              - binary_sensor.bs_fritz_repeater
+              - binary_sensor.bs_fritz_box_7390
+
+          
+      - type: glance
+        title: Speicher Schalter
+        entities:
+          - entity: weblink.speicher_schalter_basteln_web
+            name: Link
+          - entity: sensor.speicher_schalter_basteln_version
+            name: Version
+          - entity: sensor.speicher_schalter_basteln_lz
+            name: Laufzeit
+          - entity: sensor.speicher_schalter_basteln_wlan
+            name: Wlan
+          - entity: sensor.speicher_schalter_basteln_ssid
+            name: Router
+          - entity: switch.speicher_schalter_basteln
+            name: Schalter
+      - type: glance
+        title: Licht Treppe Speicher
+        entities:
+          - entity: weblink.licht_treppe_speicher_web
+            name: Link
+          - entity: sensor.licht_treppe_speicher_version
+            name: Version
+          - entity: sensor.licht_treppe_speicher_lz
+            name: Laufzeit
+          - entity: sensor.licht_treppe_speicher_wlan
+            name: Wlan
+          - entity: sensor.licht_treppe_speicher_ssid
+            name: Router
+          - entity: light.licht_treppe_speicher
+            name: Licht
+            
+      - type: glance
+        title: Pow Buero
+        entities:
+          - entity: weblink.pow_buero_web
+            name: Link
+          - entity: sensor.pow_buero_version
+            name: Version
+          - entity: sensor.pow_buero_lz
+            name: Laufzeit
+          - entity: sensor.pow_buero_wlan
+            name: Wlan
+          - entity: sensor.pow_buero_ssid
+            name: Router
+          - entity: switch.pow_buero
+            name: Schalter
+
+      - type: glance
+        title: Rollladen Buero
+        entities:
+          - entity: weblink.rollladen_buero_web
+            name: Link
+          - entity: sensor.rollladen_buero_version
+            name: Version
+          - entity: sensor.rollladen_buero_lz
+            name: Laufzeit
+          - entity: sensor.rollladen_buero_wlan
+            name: Wlan
+          - entity: sensor.rollladen_buero_ssid
+            name: Router
+          - entity: cover.rollladen_buero
+            name: Rolllade
+
+      - type: glance
+        title: Rollladen Schlafzimmer
+        entities:
+          - entity: weblink.rollladen_schlafzimmer_web
+            name: Link
+          - entity: sensor.rollladen_schlafzimmer_version
+            name: Version
+          - entity: sensor.rollladen_schlafzimmer_lz
+            name: Laufzeit
+          - entity: sensor.rollladen_schlafzimmer_wlan
+            name: Wlan
+          - entity: sensor.rollladen_schlafzimmer_ssid
+            name: Router
+          - entity: cover.rollladen_schlafzimmer
+            name: Rolllade
+            
+      - type: glance
+        title: Licht Aquarium
+        entities:
+          - entity: weblink.schalter_aquarium_web
+            name: Link
+          - entity: sensor.schalter_aquarium_version
+            name: Version
+          - entity: sensor.schalter_aquarium_lz
+            name: Laufzeit
+          - entity: sensor.schalter_aquarium_wlan
+            name: Wlan
+          - entity: sensor.schalter_aquarium_ssid
+            name: Router
+          - entity: light.schalter_aquarium
+            name: Licht
+      - type: glance
+        title: Radio Schalter Kueche
+        entities:
+          - entity: weblink.radio_schalter_kueche_web
+            name: Link
+          - entity: sensor.radio_schalter_kueche_version
+            name: Version
+          - entity: sensor.radio_schalter_kueche_lz
+            name: Laufzeit
+          - entity: sensor.radio_schalter_kueche_wlan
+            name: Wlan
+          - entity: sensor.radio_schalter_kueche_ssid
+            name: Router
+          - entity: switch.radio_schalter_kueche
+            name: Schalter
+      - type: glance
+        title: Pow Kaffee
+        entities:
+          - entity: weblink.pow_kaffee_web
+            name: Link
+          - entity: sensor.pow_kaffee_version
+            name: Version
+          - entity: sensor.pow_kaffee_lz
+            name: Laufzeit
+          - entity: sensor.pow_kaffee_wlan
+            name: Wlan
+          - entity: sensor.pow_kaffee_ssid
+            name: Router
+          - entity: switch.pow_kaffee
+            name: Schalter
+      - type: glance
+        title: Lade Schalter Vorrat
+        entities:
+          - entity: weblink.lade_schalter_vorrat_web
+            name: Link
+          - entity: sensor.lade_schalter_vorrat_version
+            name: Version
+          - entity: sensor.lade_schalter_vorrat_lz
+            name: Laufzeit
+          - entity: sensor.lade_schalter_vorrat_wlan
+            name: Wlan
+          - entity: sensor.lade_schalter_vorrat_ssid
+            name: Router
+          - entity: switch.lade_schalter_vorrat
+            name: Schalter
+            
+      - type: glance
+        title: Licht Keller Flur
+        entities:
+          - entity: weblink.licht_keller_flur_web
+            name: Link
+          - entity: sensor.licht_keller_flur_version
+            name: Version
+          - entity: sensor.licht_keller_flur_lz
+            name: Laufzeit
+          - entity: sensor.licht_keller_flur_wlan
+            name: Wlan
+          - entity: sensor.licht_keller_flur_ssid
+            name: Router
+          - entity: light.licht_keller_flur
+            name: Licht
+      - type: glance
+        title: Radio Schalter Keller
+        entities:
+          - entity: weblink.radio_schalter_keller_web
+            name: Link
+          - entity: sensor.radio_schalter_keller_version
+            name: Version
+          - entity: sensor.radio_schalter_keller_lz
+            name: Laufzeit
+          - entity: sensor.radio_schalter_keller_wlan
+            name: Wlan
+          - entity: sensor.radio_schalter_keller_ssid
+            name: Router
+          - entity: switch.radio_schalter_keller
+            name: Schalter
+      - type: glance
+        title: Pow Garage
+        entities:
+          - entity: weblink.pow_garage_web
+            name: Link
+          - entity: sensor.pow_garage_version
+            name: Version
+          - entity: sensor.pow_garage_lz
+            name: Laufzeit
+          - entity: sensor.pow_garage_wlan
+            name: Wlan
+          - entity: sensor.pow_garage_ssid
+            name: Router
+          - entity: switch.pow_garage
+            name: Schalter
+      - type: glance
+        title: Licht Garage
+        entities:
+          - entity: weblink.licht_garage_web
+            name: Link
+          - entity: sensor.licht_garage_version
+            name: Version
+          - entity: sensor.licht_garage_lz
+            name: Laufzeit
+          - entity: sensor.licht_garage_wlan
+            name: Wlan
+          - entity: sensor.licht_garage_ssid
+            name: Router
+          - entity: light.licht_garage
+            name: Licht
+      - type: glance
+        title: Licht Terasse
+        entities:
+          - entity: weblink.licht_led_web
+            name: Link
+          - entity: sensor.licht_led_version
+            name: Version
+          - entity: sensor.licht_led_lz
+            name: Laufzeit
+          - entity: sensor.licht_led_wlan
+            name: Wlan
+          - entity: sensor.licht_led_ssid
+            name: Router
+          - entity: light.licht_led
+            name: Licht
+      - type: glance
+        title: Sensor Schlafzimmer
+        entities:
+          - entity: weblink.sensor_schlafzimmer_web
+            name: Link
+          - entity: sensor.sensor_schlafzimmer_version
+            name: Version
+          - entity: sensor.sensor_schlafzimmer_lz
+            name: Laufzeit
+          - entity: sensor.sensor_schlafzimmer_wlan
+            name: Wlan
+          - entity: sensor.sensor_schlafzimmer_ssid
+            name: Router
+      - type: glance
+        title: RF Bridge
+        entities:
+          - entity: weblink.rf_bridge_web
+            name: Link
+          - entity: sensor.rf_bridge_version
+            name: Version
+          - entity: sensor.rf_bridge_lz
+            name: Laufzeit
+          - entity: sensor.rf_bridge_wlan
+            name: Wlan
+          - entity: sensor.rf_bridge_ssid
+            name: Router
+          - entity: binary_sensor.rf_bridge_lwt
+            name: Gateway

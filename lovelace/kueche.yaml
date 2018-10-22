@@ -1,0 +1,107 @@
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            title: 'Küche Graph'
+            refresh_interval: 60
+            hours_to_show: 240
+            entities:
+              - sensor.kueche_temperatur
+              - sensor.kueche_feuchte
+              - sensor.pow_kaffee_voltage
+              - sensor.pow_kaffee_current
+          - type: entities
+            entities:
+              - sensor.kueche_temperatur
+              - sensor.kueche_feuchte
+              - sensor.pow_kaffee_voltage
+              - sensor.pow_kaffee_current
+      - type: glance
+        title: Radio Schalter
+        show_header_toggle: false
+        entities:
+          - entity: weblink.radio_schalter_kueche_web
+            name: Link
+          - entity: sensor.radio_schalter_kueche_version
+            name: Version
+          - entity: sensor.radio_schalter_kueche_lz
+            name: Laufzeit
+          - entity: sensor.radio_schalter_kueche_wlan
+            name: Wlan
+          - entity: sensor.radio_schalter_kueche_v
+            name: Volt
+          - entity: switch.radio_schalter_kueche
+            name: Schalter
+          - entity: binary_sensor.radio_schalter_kueche_taste
+            name: Taste
+
+      - type: glance
+        title: Pow Kaffee
+        show_header_toggle: false
+        entities:
+          - entity: weblink.pow_kaffee_web
+            name: Link
+          - entity: sensor.pow_kaffee_version
+            name: Version
+          - entity: sensor.pow_kaffee_lz
+            name: Laufzeit
+          - entity:  sensor.pow_kaffee_wlan
+            name: Wlan
+          - entity: sensor.pow_kaffee_v
+            name: Volt
+          - entity: switch.pow_kaffee
+            name: Schalter
+          - entity: sensor.pow_kaffee_voltage
+            name: Spannung
+          - entity: sensor.pow_kaffee_current
+            name: Strom
+          - entity:  sensor.pow_kaffee_power
+            name: Leistung
+          - entity: sensor.pow_kaffee_factor
+            name: Factor
+          - entity: sensor.pow_kaffee_today
+            name: Heute
+          - entity: sensor.pow_kaffee_yesterday
+            name: Gestern
+          - entity: sensor.pow_kaffee_total
+            name: Gesammt
+
+      - type: glance
+        title: Media
+        show_header_toggle: false
+        entities:
+          - entity: binary_sensor.bs_play_mpd
+            name: Musikplayer
+          - entity: switch.sw_mpd_hrs
+            name: Schalter RSH
+          - entity: switch.sw_mpd_einslive
+            name: Schalter 1Live
+          - entity: input_number.in_mpd_kueche
+            name: Lautstärke
+      - type: glance
+        title: Media
+        cards:
+          - type: media-control
+            entity: media_player.pi_media_mpd
+          - type: media-control
+            entity: media_player.snapcast_client_6aec95f148e44614adcf25c2fafed2c0
+      - type: glance
+        title: Tracker
+        entities:
+          - device_tracker.piradio
+          - device_tracker.galaxytaba2016
+          - device_tracker.thermomix30c10e
+          - device_tracker.amazoncdea109b9
+
+      - type: glance
+        title: Kontakte
+        show_header_toggle: false
+        entities:
+          - entity: binary_sensor.tuer_contact_kueche
+            name: Tür
+          - entity: binary_sensor.tuer_contact_kueche_alarm
+            name: Tür Alarm
+          - entity: binary_sensor.fenster_contact_kueche
+            name: Fenster
+          - entity: binary_sensor.fenster_contact_kueche_alarm
+            name: Fenster Alarm
+ 

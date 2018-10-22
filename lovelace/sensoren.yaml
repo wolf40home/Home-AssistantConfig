@@ -1,0 +1,106 @@
+  - type: vertical-stack
+    cards:
+    - type: "custom:mini-graph-card"
+      entity: sensor.wohnzimmer_temperatur
+      height: 90
+      hide_icon: true
+      line_width: 2
+      font_size: 75
+      color: '#3498db'
+      hours_to_show: 240
+      accuracy: 100
+      id: wohnzimmer_temperatur
+    - type: "custom:mini-graph-card"
+      entity: sensor.kueche_temperatur
+      height: 90
+      line_width: 2
+      font_size: 75
+      color: '#3598db'
+      hours_to_show: 240
+      accuracy: 100
+      id: kueche_temperatur
+    - type: "custom:mini-graph-card"
+      entity: sensor.speicher_temperatur
+      height: 90
+      line_width: 2
+      font_size: 75
+      color: '#3598db'
+      hours_to_show: 240
+      accuracy: 100
+      id: speicher_temperatur
+      
+  - type: vertical-stack
+    cards:
+      - type: history-graph
+        title: 'Temperatur'
+        refresh_interval: 60
+        hours_to_show: 120
+        entities:
+          - sensor.treppe_speicher_temperatur
+          - sensor.schlafzimmer_temperatur
+          - sensor.garage_temperatur
+          - sensor.keller_temperatur
+          - sensor.licht_keller_flur_temperatur
+          - sensor.temperatur_minmax
+          - sensor.temperatur_nebenraume_minmax
+      - type: glance
+        entities:
+        - entity: sensor.speicher_temperatur
+          name: Speicher
+        - entity: sensor.treppe_speicher_temperatur
+          name: Treppe Speicher
+        - entity: sensor.schlafzimmer_temperatur
+          name: Schlafzimmer
+        - entity: sensor.wohnzimmer_temperatur
+          name: Wohnzimmer
+        - entity: sensor.kueche_temperatur
+          name: Küche
+        - entity: sensor.garage_temperatur
+          name: Garage
+        - entity: sensor.keller_temperatur
+          name: Keller
+        - entity: sensor.licht_keller_flur_temperatur
+          name: Keller Flur
+        - entity: sensor.temperatur_minmax
+          name: MinMax
+        - entity: sensor.temperatur_nebenraume_minmax
+          name: MinMax neben
+  - type: vertical-stack
+    cards:
+      - type: history-graph
+        title: 'Feuchte'
+        refresh_interval: 60
+        hours_to_show: 120
+        entities:
+          - sensor.speicher_feuchte
+          - sensor.treppe_speicher_feuchte
+          - sensor.schlafzimmer_feuchte
+          - sensor.wohnzimmer_feuchte
+          - sensor.kueche_feuchte
+          - sensor.garage_feuchte
+          - sensor.keller_feuchte
+          - sensor.licht_keller_flur_feuchte
+          - sensor.feuchte_minmax
+          - sensor.feuchte_nebenraume_minmax
+      - type: glance
+        entities:
+        - entity: sensor.speicher_feuchte
+          name: Speicher
+        - entity: sensor.treppe_speicher_feuchte
+          name: Treppe Speicher
+        - entity: sensor.treppe_speicher_feuchte
+          name: Schlafzimmer
+        - entity: sensor.schlafzimmer_feuchte
+          name: Wohnzimmer
+        - entity: sensor.kueche_feuchte
+          name: Küche
+        - entity: sensor.garage_feuchte
+          name: Garage
+        - entity: sensor.keller_feuchte
+          name: Keller
+        - entity: sensor.licht_keller_flur_feuchte
+          name: Keller Flur
+        - entity: sensor.feuchte_minmax
+          name: MinMax
+        - entity: sensor.feuchte_nebenraume_minmax
+          name: MinMax neben
