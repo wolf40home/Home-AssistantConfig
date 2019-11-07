@@ -1,6 +1,8 @@
 logger:
-  default: warning
+  default: critical
   logs:
+    homeassistant.core: fatal
+    homeassistant.components.mqtt: warning
     homeassistant.components.rest: warn
     homeassistant.components.zha: warn
     homeassistant.components.camera: warn
@@ -11,46 +13,43 @@ logger:
     homeassistant.components.sensor.snmp: critical
     homeassistant.components.script: warn
     homeassistant.components.tts: warn
-    homeassistant.components.media_player: warn
+    homeassistant.components.media_player: critical
+    homeassistant.components.samsungtv: notset
     homeassistant.components.input_select: warn
     homeassistant.components.input_number: critical
     homeassistant.components.http: warn
     homeassistant.components.shell_command: warn
     homeassistant.components.device_tracker: warn
-    homeassistant.components.mqtt: error
     homeassistant.components.automation: warn
-    homeassistant.components.websocket: warn
+    homeassistant.components.websocket: critical
     homeassistant.components.discovery: warn
     homeassistant.components.light: warn
     homeassistant.components.wink: warn
-    homeassistant.custom_components: warn
+    homeassistant.custom_components: critical
     homeassistant.components.camera.usps: warn
     homeassistant.components.usps: warn
     homeassistant.components.sensor.usps: warn
     homeassistant.components.feedreader: warn
-    homeassistant.components: warn
+    homeassistant.components: critical
     homeassistant.components.binary_sensor.mqtt: error
     bellows.uart: warn
-    homeassistant.core: warn
     homeassistant.helpers.script: warn
     homeassistant.helpers.entity: warn
     homeassistant.helpers.restore_state: warn
     homeassistant.helpers.template: critical
     homeassistant.loader: warn
     homeassistant.setup: warn
+    media_player.wohnzimmer_fernseher: notset
+    ## cmake 
+    media_player.wohnzimmer_tuner_2: critical
     phue: warn
     plexapi: warn
     roku: warn
     dlipower.dlipower: error
     myusps: warn
     pubnub: warn
-    homeassistant.components.http.ban: debug
 
-group:
-  logger_input_select_card:
-   name: Log Level
-   entities:
-     - input_select.log_level
+
 
   ################### Logger level
 input_select:
@@ -58,6 +57,7 @@ input_select:
     name: Log Level
     options:
      - warn
+     - critical
      - fatal
      - error
      - warning
@@ -65,7 +65,7 @@ input_select:
      - info
      - debug
      - notset
-    initial: warning
+    initial: critical
 
 
   ############################# Sets Logging Level

@@ -1,2 +1,5 @@
 
-#
+  zwa:
+    title: Zwave
+    icon: mdi:sitemap
+    url: http://nuc:1880/ui/#!/4#%2F0

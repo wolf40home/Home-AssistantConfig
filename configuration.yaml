@@ -1,57 +1,51 @@
 homeassistant:
-  name: home
-  # Location required to calculate the time the sun rises and sets
-  latitude:  !secret latitude
-  longitude: !secret longitude
-  # Impacts weather/sunrise data (altitude above sea level in meters)
-  elevation: 54
-  # metric for Metric, imperial for Imperial
-  unit_system: metric
-  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-  time_zone: Europe/Berlin
-  # Customization file
-  # Include customizations
+
   #-------------------------------------------
+#  auth_providers:
+#   - type: legacy_api_password
+#     api_password: !secret http_password
   #-------------------------------------------
   packages: !include_dir_named packages
-  customize: !include customize.yaml
 
-# Enable configuration UI
+
+
 #-------------------------------------------
+# HTTP Server Config
+#-------------------------------------------
+http:
+#  api_password: !secret http_password
+#  ssl_certificate: /home/homeassistant/.homeassistant/certificate.pem
+#  ssl_key: /home/homeassistant/.homeassistant/privkey.pem
+
+  # Secrets are defined in the file secrets.yaml
+  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+  # base_url: example.duckdns.org:8123
+
+automation:
+
+ 
 config:
-#-------------------------------------------
-
 # Frontend Settings
 #-------------------------------------------
-#frontend:
-#  javascript_version: latest
-#  themes: !include themes.yaml
-#-------------------------------------------
-
-# Logger Settings
-#-------------------------------------------
-#logger: !include logger.yaml
-#-------------------------------------------
-
-  
-# Logbook Settings
-#-------------------------------------------
-logbook: !include logbook.yaml
-system_log:
-  max_entries: 500
-#-------------------------------------------
-
-# Recorder Settings
-#-------------------------------------------
-recorder:  !include recorder.yaml
+frontend:
+  themes: !include_dir_merge_named themes
 #-------------------------------------------
 
 # History support
 #-------------------------------------------
 history: !include history.yaml
 
-#history_graph: !include history_graph.yaml
+# Logbook Settings
 #-------------------------------------------
+logbook: !include logbook.yaml
+system_log:
+  max_entries: 500
+  
+# Enables a map showing the location of tracked devices
+#-------------------------------------------
+
+#-------------------------------------------
+system_health:
 
 # Checks for available updates
 #-------------------------------------------
@@ -60,11 +54,13 @@ updater:
   # Optional, allows Home Assistant developers to focus on popular components.
 #  include_used_components: true
 
+
+# Recorder Settings
+#-------------------------------------------
+recorder:  !include recorder.yaml
 #-------------------------------------------
 
-# Zeroconf
-#-------------------------------------------
-zeroconf:
+#history_graph: !include history_graph.yaml
 #-------------------------------------------
 
 # Browser
@@ -72,197 +68,51 @@ zeroconf:
 browser:
 #-------------------------------------------
 
-# HTTP Server Config
-#-------------------------------------------
-http:
-  api_password: !secret http_password
-#  ssl_certificate: /home/homeassistant/.homeassistant/certificate.pem
-#  ssl_key: /home/homeassistant/.homeassistant/privkey.pem
-
-  # Secrets are defined in the file secrets.yaml
-  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
-  # base_url: example.duckdns.org:8123
-
-
-
-# Allows you to issue voice commands from the frontend in enabled browsers
-#-------------------------------------------
-conversation:
-  intents:
-    ShoppingListAddItem:
-      - Add {item} to my shopping list
-      
-#-------------------------------------------
-
-shell_command:
-  lovelace_gen: 'python /config/lovelace-gen.py'
-# Enables a map showing the location of tracked devices
-#-------------------------------------------
-map:
-#-------------------------------------------
-
-
-# Pilight 433 MHz Empfänger
-#-------------------------------------------
-#pilight:
-#  host: pi-hass.fritz.box
-#  port: 5000
-#  send_delay: 0.4
-#  whitelist:  # optional
-#    protocol:
-#      - daycom
-#      - intertechno
-#    id:
-#      - 42
-#-------------------------------------------
-
-#-------------------------------------------
-remote:
-  - platform: harmony
-    name: Wohnzimmer
-    host: HarmonyHub.fritz.box
-    activity: Fernsehen
-emulated_roku:
-  host_ip: 127.0.0.1 # should be set to Home Assistant's address
-#  advertise_ip: 10.0.0.10 # optional, defaults to host_ip if not specified
-  upnp_bind_multicast: True # optional, defaults to True
-  listen_ports:
-    - 8060
-#    - 8061:8080 # optional format when using something like Docker - port:advertise_port
-
- #-------------------------------------------
-
-#MQTT
 #-------------------------------------------
 mqtt:
-  broker: 10.10.0.4
+  broker: 10.10.0.14
+  port: 1883
+  client_id: home-zwave
+  keepalive: 60
   username: !secret mqtt_user
   password: !secret mqtt_pwr
+
+#  certificate: /config/ca.crt
   birth_message:
-    topic: "tele/hass1/LWT"
+    topic: 'hasszwave/status'
     payload: "online"
     qos: 1
     retain: true
   will_message:
-    topic: "tele/hass1/LWT"
+    topic: 'hasszwave/status'
     payload: "offline"
     qos: 1
     retain: true 
-#  discovery: false
-#  discovery_prefix: homeassistant
-  
-#mqtt_statestream:
-#  base_topic: homeassistant
-#  exclude:
-#    domains:
-#      - group
-#      - media_player
-#      - device_tracker
-#      - script
-#      - calendar
-#      - script
-#      - weather
-#      - sun
-      
  
- 
-#  certificate: /home/pi/client.crt
-#-------------------------------------------
-
-# Track the sun
-#-------------------------------------------
-sun:
-weather:
-  - platform: openweathermap
-    api_key: !secret openweathermap
-    latitude: !secret latitude
-    longitude: !secret longitude
-    forecast: true
-#-------------------------------------------
-
-# Discovery suche im Netzwerk
-#-------------------------------------------
-discovery:
-  ignore:
-    - igd
-#-------------------------------------------
-
-#
-#-------------------------------------------
-input_number: !include input_number.yaml
-#-------------------------------------------
-#
-
-# CEC support
-#-------------------------------------------
-#hdmi_cec:  !include cec.yaml
-#-------------------------------------------
-
-# Camera support
-#-------------------------------------------
-camera: !include camera.yaml
-#-------------------------------------------
-
-# Text to speech settings
-#-------------------------------------------
-#tts:
-#  - platform: google
-#    language: 'de'
-#-------------------------------------------
+mqtt_statestream:
+  base_topic: hasszwave
+  include:
+    domains:
+      - sensor
+      - cover
+      - climate
+      - switch
+     
 
 # Panel settings
 #-------------------------------------------
 panel_iframe: !include panels.yaml
 #-------------------------------------------
+panel_custom:
+  - name: zwavegraph2
+    sidebar_title: ZWave Graph2
+    sidebar_icon: mdi:access-point-network
+    url_path: zwave
 
-# Shopping support
-#-------------------------------------------
-shopping_list:
-#-------------------------------------------
-
-# Tracer support
-#-------------------------------------------
-device_tracker: !include device_tracker.yaml
-#-------------------------------------------
-
-
-#-------------------------------------------
-#google:
-#  client_id: !secret google_client_id
-#  client_secret: !secret google_client_secret
-#-------------------------------------------
+zwave:
+  usb_path: /dev/ttyACM0
+  polling_interval: 600000
 
 
-#-------------------------------------------
-telegram_bot:
-  - platform: polling
-    api_key: !secret telegram_api_key
-    allowed_chat_ids:
-      - 470666005
-      - 538316188
-notify:
-  - name: wolfgang
-    platform: telegram
-    chat_id: 470666005
-
-  - name: barbara
-    platform: telegram
-    chat_id: 538316188
-    
-  - name: wolfhome
-    platform: group
-    services:
-      - service: wolfgang
-      - service: barbara
-     
-#-------------------------------------------
-#alarm_control_panel:
-#  - platform: manual
-alert: !include alert.yaml
-
-# Weblinks
-#-------------------------------------------
-weblink: !include weblink.yaml
 
 
-#-------------------------------------------

@@ -1,18 +1,63 @@
   - platform: fritz
     host: 10.10.0.1
     username: !secret fritz_user
-    password: !secret normal_password
-    consider_home: 180
+    password: !secret http_password
+    consider_home: 300
     interval_seconds: 100
 
-  - platform: asuswrt
-    host: 10.10.0.7
-    mode: ap
-    username: !secret fritz_user
-    password: !secret normal_password
-    consider_home: 180
-    interval_seconds: 100
-  - platform: nmap_tracker
-    hosts: 10.10.0.1-60
-    consider_home: 180
-    interval_seconds: 100
+  - platform: ping
+    count: 2
+    hosts:
+      fritzbox: 10.10.0.1
+      wlannetz: 10.10.0.2
+      nas2: 10.10.0.3
+      nas3: 10.10.0.4
+      wlanspeicher: 10.10.0.5
+      wlankueche: 10.10.0.6
+      rtac88ua0f8: 10.10.0.7
+      wlankeller: 10.10.0.8
+      swbuero: 10.10.0.9
+      swkeller: 10.10.0.10
+      swspeicher: 10.10.0.11
+      hcl_054057: 10.10.0.12
+      cam1: 10.10.0.16
+      cam2: 10.10.0.17
+      pi_hole: 10.10.0.18
+      pi_radiob3: pi-radiob3
+      pi_dm: pi-dm
+      pi_dw1: pi-dw1
+      pi_radio: pi-radio
+      aquarium: aquarium
+      wolfgangpc: Wolfgang-PC
+      wolfgang_pc2: Wolfgang-PC2
+      drucker: SEC0015990D893F
+      lled: lled
+      ltreppeoben: ltreppeoben
+      pbuero1: pbuero1
+      pbuero2: pbuero2
+      pbuero3: pbuero3
+      am335x_opt: wohnzimmer-tuner
+      tizen: wohnzimmer-fernseher
+      amazoncdea109b9: amazon-cdea109b9
+      barbarasipad: Barbaras-iPad
+      dualschlaf: dualschlaf
+      lgarage: lgarage
+      tsensorbuero: tsensorbuero
+      tsensorschlaf: tsensorschlaf
+      lschaltervor: lschaltervor
+      pgarage: pgarage
+      speicherbasteln: speicherbasteln
+      rschalter: rschalter
+      hauto: hauto
+      rfbridge: rfbridge
+      lled2: lled2
+      vusolo4k: vusolo4k
+      espabd84c: ESP_ABD84C
+      harmonyhub: HarmonyHub
+      w7der03852l: W7DER03852L
+      wtdelvse044110l: WTDELVSE044110L
+      
+#  - platform: nmap_tracker
+#    hosts: 10.10.0.1-100
+#    consider_home: 300
+#    interval_seconds: 60

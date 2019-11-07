@@ -16,7 +16,6 @@ exclude:
     - sensor.time_utc
     - sensor.swap_used
     - sensor.ram_free
-    - sensor.disk_used_
     - sensor.cpu_used
     - sensor.average_load_1m
     - sensor.rf_bridge_lz

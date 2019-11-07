@@ -1,9 +1,0 @@
-- platform: generic
-  still_image_url: http://s15731777.onlinehome-server.info/readImage.asp?dummy=1513334922984
-  name: Borkum
-- platform: generic
-  still_image_url: https://livecloud-s3.freetls.fastly.net/cb-11a75d29/media/e3c83f06-50aa-4e19-879a-9af37d2930ac/preview/1280x720.jpg
-  name: Borkum Wetter
-#- platform: mjpeg
-#  mjpeg_url: http://pi-hass.fritz.box:8081  
-#  name: Buero  

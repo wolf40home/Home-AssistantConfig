@@ -3,13 +3,15 @@ include:
     - sensor
     - switch
     - ligth
-
+  entities:
+    - input_number.in_temp_buero
 exclude:
     entities:
       - sensor.last_boot
       - sensor.since_last_boot
       - sensor.s_time_date
       - sun.sun
+      - sensor.mond
       - sensor.rollladen_Buero_v
       - sensor.rollladen_buero_lz
       - sensor.pow_buero_v
@@ -26,3 +28,7 @@ exclude:
       - sensor.pow_kaffee_lz
       - sensor.radio_schalter_kueche_v
       - sensor.radio_schalter_kueche_lz
+      - sensor.auto_aquarium_stop
+      - sensor.s_day_night
+      - switch.nas2_wake
+      - switch.nas3_wake
